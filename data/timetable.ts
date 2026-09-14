@@ -3,21 +3,21 @@ import type { TimetableDay } from "./types";
 export const timetable: TimetableDay[] = [
   {
     label: "1日目",
-    date: "日程未定",
-    venue: "会場未定",
+    date: "10月10日（土）",
+    venue: "Resonite 特設会場",
     isPlaceholder: true,
     slots: [
       { time: "--:--", title: "開場・接続確認", kind: "open" },
       { time: "--:--", title: "開会" },
-      { time: "--:--", title: "学生VR/XRサークル活動報告" },
+      { time: "--:--", title: "学生VR/XR団体活動報告" },
       { time: "--:--", title: "ゲスト講演", kind: "talk" },
       { time: "--:--", title: "交流会" },
     ],
   },
   {
     label: "2日目",
-    date: "日程未定",
-    venue: "会場未定",
+    date: "10月11日（日）",
+    venue: "VRChat 特設会場",
     isPlaceholder: true,
     slots: [
       { time: "--:--", title: "開場・接続確認", kind: "open" },

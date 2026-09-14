@@ -1,8 +1,8 @@
 import type { LinkItem } from "./types";
 
 export const venueLinks: LinkItem[] = [
-  { label: "VRChat", note: "会場情報は近日公開" },
-  { label: "cluster", note: "会場情報は近日公開" },
+  { label: "Resonite", note: "Day1 会場情報は近日公開" },
+  { label: "VRChat", note: "Day2 会場情報は近日公開" },
   { label: "YouTube", note: "配信URLは近日公開" },
 ];
 

@@ -115,7 +115,7 @@ const structuredData = {
   },
   organizer: {
     "@type": "Organization",
-    name: "全国学生VRサークル活動報告大会",
+    name: "全日本大学メタバース連盟 NUMA（共催：東京大学VRサークル UT-virtual）",
     url: SITE_URL,
   },
   subEvent: presentationDates.map((date, index) => ({

@@ -15,7 +15,7 @@ export function EntryCTA() {
           <h2 id="entry-title">登壇エントリー</h2>
           <p>
             2つの発表枠を、同じフォームから申し込めます。<br />
-            <span className="entry-status">エントリー受付中・9月15日締切</span>
+            <span className="entry-status">エントリー受付中・10月2日締切（延長中）</span>
           </p>
         </MotionReveal>
         <div className="entry-grid">
@@ -61,7 +61,7 @@ export function EntryCTA() {
                 </div>
               ))}
             </dl>
-            <p>スライドと動画は、後日案内される別フォームから提出します。</p>
+            <p>発表スライドは後日案内される提出フォームから提出します（バックアップ動画の提出は任意です）。</p>
           </div>
         </MotionReveal>
 

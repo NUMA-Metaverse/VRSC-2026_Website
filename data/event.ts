@@ -2,14 +2,14 @@ export const event = {
   name: "全国学生VRサークル活動報告大会",
   year: "2026",
   description:
-    "全国の学生VR/XRサークルやクリエイターが、活動内容や制作した作品を紹介・共有するイベントです。",
+    "全国の学生VR/XR団体やクリエイターが、活動内容や制作した作品を紹介・共有するイベントです。",
   date: {
     label: "2026年10月10日（土）・11日（日）",
     detail: "各日19:00〜22:50（登壇者集合18:30）",
   },
   venue: {
-    label: "オンライン開催予定",
-    detail: "開催形式・会場は決まり次第お知らせします",
+    label: "Day1: Resonite / Day2: VRChat 特設会場",
+    detail: "各日オンライン開催（YouTube Live配信あり）",
   },
 } as const;
 
