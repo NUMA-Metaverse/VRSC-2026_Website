@@ -5,8 +5,7 @@ export function Footer() {
         <div>
           <p className="footer-event">全国学生VRサークル活動報告大会 2026</p>
           <div className="footer-credits" style={{ marginTop: "12px", fontSize: "11px", lineHeight: "1.8", color: "#c4c3bc" }}>
-            <p>主催：全日本大学メタバース連盟 NUMA</p>
-            <p>共催：東京大学VRサークル UT-virtual</p>
+            <p>共催：全日本大学メタバース連盟 NUMA、東京大学VRサークル UT-virtual</p>
             <p>協力：東京大学VRセンター</p>
           </div>
         </div>
