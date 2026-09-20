@@ -83,7 +83,7 @@ p, h1, h2, h3, figure { margin: 0; }
 .about-topics p { font-size: 11px; line-height: 1.9; color: #55544e; }
 .photo-credit { font-size: 10px; color: #62615b; margin-top: 15px; text-align: right; }
 .entry { background: var(--red); border-block: 3px solid var(--black); background-image: radial-gradient(#17171722 .8px, transparent .8px); background-size: 7px 7px; }
-.guest { border-top: 2px solid var(--black); background: #fffaf0; }
+.guest { background: #ffe0b2; }
 .guest-heading h2 { margin-bottom: 38px; font-size: clamp(28px, 3.2vw, 46px); font-weight: 900; letter-spacing: -.05em; line-height: 1.5; }
 .guest-layout { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.4fr); gap: 54px; align-items: start; }
 .guest-portrait figure { padding: 9px; border: 2px solid var(--black); background: var(--paper); box-shadow: 6px 6px 0 var(--black); }
