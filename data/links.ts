@@ -13,7 +13,8 @@ export const entryLinks: LinkItem[] = [
 ];
 
 export const archives: LinkItem[] = [
-  { label: "2025", href: "https://ut-virtual.github.io/ev-VRCircleMeeting2025/", note: "活動報告大会 & XR制作物プレゼン" },
-  { label: "2024", href: "https://ut-virtual.github.io/ev-VRCircleMeeting2024/", note: "全国学生VRサークル活動報告大会" },
-  { label: "2023", href: "https://ut-virtual.github.io/ev-VRCircleMeeting2023/", note: "全国学生VRサークル活動報告大会" },
+  { label: "2025", href: "https://vrsc-2025.utvirtual.tech/", note: "活動報告大会 & XR制作物プレゼン" },
+  { label: "2024", href: "https://vrsc-2024.utvirtual.tech/", note: "全国学生VRサークル活動報告大会" },
+  { label: "2023", href: "https://vrsc-2023.utvirtual.tech/", note: "全国学生VRサークル活動報告大会" },
+  { label: "2022", href: "https://vrsc-2022.utvirtual.tech/", note: "全国学生VRサークル活動報告大会" },
 ];
