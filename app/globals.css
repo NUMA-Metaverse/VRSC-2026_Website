@@ -83,6 +83,16 @@ p, h1, h2, h3, figure { margin: 0; }
 .about-topics p { font-size: 11px; line-height: 1.9; color: #55544e; }
 .photo-credit { font-size: 10px; color: #62615b; margin-top: 15px; text-align: right; }
 .entry { background: var(--red); border-block: 3px solid var(--black); background-image: radial-gradient(#17171722 .8px, transparent .8px); background-size: 7px 7px; }
+.guest { background: #ffe0b2; }
+.guest-heading h2 { margin-bottom: 38px; font-size: clamp(28px, 3.2vw, 46px); font-weight: 900; letter-spacing: -.05em; line-height: 1.5; }
+.guest-layout { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.4fr); gap: 54px; align-items: start; }
+.guest-portrait figure { padding: 9px; border: 2px solid var(--black); background: var(--paper); box-shadow: 6px 6px 0 var(--black); }
+.guest-portrait img { width: 100%; height: auto; }
+.guest-portrait figcaption { padding: 24px 18px 18px; }
+.guest-role { font-size: 12px; font-weight: 700; line-height: 1.8; }
+.guest-portrait h3 { margin-top: 8px; color: #b84900; font-size: clamp(30px, 3.2vw, 42px); font-weight: 900; letter-spacing: .04em; }
+.guest-profile { font-size: 14px; line-height: 2.1; overflow-wrap: anywhere; }
+.guest-profile p + p { margin-top: 22px; }
 .entry-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; margin-bottom: 42px; }
 .entry-heading h2 { font-size: clamp(28px, 3.4vw, 46px); font-weight: 950; letter-spacing: -.06em; line-height: 1.35; color: white; margin-top: 14px; text-shadow: 3px 3px 0 var(--black); }
 .entry-heading > p { font-size: 13px; line-height: 2; font-weight: 700; }
@@ -167,6 +177,11 @@ p, h1, h2, h3, figure { margin: 0; }
   .section-space { padding-block: 55px; }
   .about-layout { display: flex; flex-direction: column; gap: 25px; align-items: stretch; }
   .about-copy h2 { font-size: 30px; margin-bottom: 22px; }
+  .guest-heading h2 { font-size: 30px; margin-bottom: 26px; }
+  .guest-layout { grid-template-columns: 1fr; gap: 32px; }
+  .guest-portrait { width: min(440px, 100%); margin-inline: auto; }
+  .guest-portrait figcaption { padding: 20px 14px 14px; }
+  .guest-profile { font-size: 13px; line-height: 2; }
   .about-copy p { font-size: 12px; line-height: 2; }
   .photo-collage { min-height: 330px; width: min(440px, 100%); margin: 15px auto; }
   .collage-main { width: 88%; }
