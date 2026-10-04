@@ -18,3 +18,8 @@ export const aboutPoints = [
   { number: "02", title: "作品紹介", text: "学生が制作したVR/XR作品を紹介します。" },
   { number: "03", title: "交流", text: "大学や地域を越えて学生同士が交流します。" },
 ] as const;
+
+export const presentationDates = [
+  { dateTime: "2026-10-10T19:00:00+09:00", label: "10月10日（土）19:00〜22:50（Day1: Resonite特設会場）" },
+  { dateTime: "2026-10-11T19:00:00+09:00", label: "10月11日（日）19:00〜22:50（Day2: VRChat特設会場）" },
+] as const;

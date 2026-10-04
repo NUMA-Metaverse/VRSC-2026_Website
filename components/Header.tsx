@@ -5,8 +5,7 @@ export function Header() {
       <a className="brand" href="#top">
         <span className="brand-name">全国学生VRサークル<br />活動報告大会 <b>2026</b></span>
       </a>
-      <nav className="desktop-nav" aria-label="メインナビゲーション"><a href="#about">大会について</a><a href="#entry">募集について</a><a href="#archive">過去の開催</a></nav>
-      <a className="header-cta" href="#entry">登壇エントリー <span aria-hidden="true">↗</span></a>
+      <nav className="site-nav" aria-label="メインナビゲーション"><a href="#about">大会について</a><a href="#guest">ゲスト講演</a><a href="#archive">過去の開催</a></nav>
     </header>
   );
 }

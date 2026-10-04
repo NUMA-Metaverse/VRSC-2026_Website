@@ -8,8 +8,7 @@ import {
   optionalEnv,
   siteUrl,
 } from "@/lib/site";
-import { event } from "@/data/event";
-import { presentationDates } from "@/data/recruitment";
+import { event, presentationDates } from "@/data/event";
 import "./globals.css";
 
 const verificationOther = {

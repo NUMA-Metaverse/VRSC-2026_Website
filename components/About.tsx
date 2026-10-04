@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { presentationDates } from "@/data/event";
 import { publicAsset } from "@/lib/site";
 import { MotionReveal } from "./ui/MotionReveal";
 
@@ -19,6 +20,12 @@ export function About() {
             <p>
               活動内容や運営方法、制作の技術や工夫を共有し、大学・学生団体間の交流を深めることを目的としています。
             </p>
+            <div className="event-dates">
+              <h3>開催日時・会場</h3>
+              {presentationDates.map((item) => (
+                <time key={item.dateTime} dateTime={item.dateTime}>{item.label}</time>
+              ))}
+            </div>
           </MotionReveal>
           <MotionReveal className="photo-collage" effect="photo" delay={0.12}>
             <figure className="collage-main">
