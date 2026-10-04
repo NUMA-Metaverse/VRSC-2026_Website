@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { presentationDates } from "@/data/event";
+import { event, presentationDates } from "@/data/event";
 import { publicAsset } from "@/lib/site";
 import { MotionReveal } from "./ui/MotionReveal";
 
@@ -15,7 +15,7 @@ export function About() {
           <MotionReveal className="about-copy">
             <h2 id="about-title">大会について</h2>
             <p>
-              全国学生VRサークル活動報告大会では、各団体の活動報告、学生によるVR/XR制作物の発表、参加者同士の交流を行います。
+              {event.name}では、各団体の活動報告、学生によるVR/XR制作物の発表、参加者同士の交流を行います。
             </p>
             <p>
               活動内容や運営方法、制作の技術や工夫を共有し、大学・学生団体間の交流を深めることを目的としています。

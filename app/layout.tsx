@@ -47,8 +47,8 @@ export const metadata: Metadata = {
   keywords: SITE_KEYWORDS,
   applicationName: SITE_NAME,
   category: "event",
-  creator: "全国学生VRサークル活動報告大会",
-  publisher: "全国学生VRサークル活動報告大会",
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
   alternates: {
     canonical: "/",
     languages: {
@@ -145,4 +145,3 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     </html>
   );
 }
-

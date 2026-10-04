@@ -24,7 +24,7 @@ p, h1, h2, h3, figure { margin: 0; }
 .section-space { padding-block: 88px; }
 .site-header { position: sticky; top: 0; z-index: 50; min-height: 84px; padding: 14px 40px; display: flex; align-items: center; gap: 32px; background: var(--paper); border-bottom: 2px solid var(--black); }
 .brand { display: flex; gap: 12px; align-items: center; margin-right: auto; }
-.brand-name { font-size: 13px; line-height: 1.7; font-weight: 800; }
+.brand-name { max-width: 330px; overflow-wrap: anywhere; font-size: 13px; line-height: 1.7; font-weight: 800; }
 .brand-name b { margin-left: 5px; }
 .site-nav { display: flex; align-items: center; gap: 30px; font-size: 12px; font-weight: 800; }
 .site-nav a { white-space: nowrap; padding-block: 12px; text-underline-offset: 7px; }
@@ -174,4 +174,8 @@ p, h1, h2, h3, figure { margin: 0; }
   .participation-card { padding: 22px 18px; }
   .participation-card h3 { font-size: 19px; }
   .site-nav { flex-wrap: wrap; font-size: 10px; }
+}
+@media (max-width: 760px) {
+  .brand-name { max-width: 300px; }
+  .footer-event { max-width: none; }
 }
