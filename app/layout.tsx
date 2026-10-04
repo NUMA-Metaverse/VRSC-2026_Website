@@ -1,3 +1,4 @@
+import { organizers } from "@/data/credits";
 import type { Metadata, Viewport } from "next";
 import {
   SITE_DESCRIPTION,
@@ -112,11 +113,11 @@ const structuredData = {
     url: SITE_URL,
     name: event.venue.label,
   },
-  organizer: {
+  organizer: organizers.map((name) => ({
     "@type": "Organization",
-    name: "全日本大学メタバース連盟 NUMA（共催：東京大学VRサークル UT-virtual）",
+    name,
     url: SITE_URL,
-  },
+  })),
   subEvent: presentationDates.map((date, index) => ({
     "@type": "Event",
     name: `${SITE_SHORT_NAME} ${index + 1}日目`,

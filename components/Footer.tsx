@@ -1,4 +1,5 @@
 import { event } from "@/data/event";
+import { credits } from "@/data/credits";
 
 export function Footer() {
   return (
@@ -6,10 +7,14 @@ export function Footer() {
       <div className="page-container footer-content">
         <div>
           <p className="footer-event">{event.name}</p>
-          <div className="footer-credits" style={{ marginTop: "12px", fontSize: "11px", lineHeight: "1.8", color: "#c4c3bc" }}>
-            <p>共催：全日本大学メタバース連盟 NUMA、東京大学VRサークル UT-virtual</p>
-            <p>協力：東京大学VRセンター</p>
-          </div>
+          <dl className="footer-credits">
+            {credits.map((credit) => (
+              <div key={credit.label}>
+                <dt>{credit.label}</dt>
+                <dd>{credit.names.map((name) => <span key={name}>{name}</span>)}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
         <a className="footer-top" href="#top">ページの先頭へ <span aria-hidden="true">↑</span></a>
       </div>
