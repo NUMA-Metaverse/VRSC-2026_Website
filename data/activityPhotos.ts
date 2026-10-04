@@ -3,7 +3,7 @@ export type ActivityPhoto = {
   alt: string;
 };
 
-// 3本の写真帯には異なる写真を割り当てる。ファイル名は public/images 内のもの。
+// 4本の写真帯には異なる写真を割り当てる。ファイル名は public/images 内のもの。
 export const heroPhotos: readonly ActivityPhoto[] = [
   { file: "image", alt: "青空の下で集まった大勢のアバターの集合写真" },
   { file: "kait-vr", alt: "星空のワールドでの団体集合写真" },
@@ -25,12 +25,14 @@ export const preGuestPhotos: readonly ActivityPhoto[] = [
   { file: "vrchat-2026-04-23-21-59-18-007-3840x2160-1", alt: "星空のワールドでポーズを取るアバター" },
 ];
 
-export const archivePhotos: readonly ActivityPhoto[] = [
+export const preParticipationPhotos: readonly ActivityPhoto[] = [
   { file: "33232", alt: "円になって集まったアバターを上から撮影した写真" },
   { file: "1213", alt: "ワールド内の自動販売機の前での記念撮影" },
   { file: "6565564", alt: "テーブル上の展示を囲んで集まるメンバー" },
   { file: "64644", alt: "星空の広がるワールドを見上げるメンバー" },
+];
 
+export const archivePhotos: readonly ActivityPhoto[] = [
   { file: "2", alt: "野球場のワールドで遊ぶメンバー" },
   { file: "5656", alt: "バーチャル空間でのメンバー同士の記念撮影" },
   { file: "3232", alt: "2026年の文字の前でポーズを取るメンバー" },
