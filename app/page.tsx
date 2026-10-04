@@ -1,3 +1,4 @@
+import { Participation } from "@/components/Participation";
 import { About } from "@/components/About";
 import { Archive } from "@/components/Archive";
 import { Footer } from "@/components/Footer";
@@ -14,6 +15,7 @@ export default function Home() {
       <main id="main-content">
         <Hero />
         <About />
+        <Participation />
         <PhotoStrip photos={preGuestPhotos} label="ゲスト講演前の活動写真" direction="left" />
         <GuestLecture />
         <PhotoStrip
