@@ -8,7 +8,7 @@ import { Hero } from "@/components/Hero";
 import { PhotoStrip } from "@/components/PhotoStrip";
 import { Timetable } from "@/components/Timetable";
 import { Lineup } from "@/components/Lineup";
-import { archivePhotos, preTimetablePhotos, preGuestPhotos, preParticipationPhotos } from "@/data/activityPhotos";
+import { archivePhotos, preTimetablePhotos, preLineupPhotos, preGuestPhotos, preParticipationPhotos } from "@/data/activityPhotos";
 
 export default function Home() {
   return (
@@ -19,15 +19,16 @@ export default function Home() {
         <About />
         <PhotoStrip photos={preTimetablePhotos} label="タイムテーブル前の活動写真" direction="left" />
         <Timetable />
+        <PhotoStrip photos={preLineupPhotos} label="参加団体・XR制作物前の活動写真" direction="right" />
         <Lineup />
-        <PhotoStrip photos={preParticipationPhotos} label="参加・視聴方法前の活動写真" direction="right" />
+        <PhotoStrip photos={preParticipationPhotos} label="参加・視聴方法前の活動写真" direction="left" />
         <Participation />
-        <PhotoStrip photos={preGuestPhotos} label="ゲスト講演前の活動写真" direction="left" />
+        <PhotoStrip photos={preGuestPhotos} label="ゲスト講演前の活動写真" direction="right" />
         <GuestLecture />
         <PhotoStrip
           photos={archivePhotos}
           label="過去の開催前の活動写真"
-          direction="right"
+          direction="left"
         />
         <Archive />
       </main>
