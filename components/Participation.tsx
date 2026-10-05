@@ -13,7 +13,7 @@ export function Participation() {
           <article className="participation-card">
             <h3>Day1：Resonite会場</h3>
             <p><time dateTime="2026-10-10">10月10日（土）</time></p>
-            <p>誰でも入れるセッション（Anyone）で開催します。Resoniteのインストールが必要です。アカウントがなくても参加できます。</p>
+            <p>誰でも入れるセッションで開催します。Resoniteのインストールが必要です。アカウントがなくても参加できます。</p>
             <h4>会場への入り方</h4>
             <ol>
               <li>当日、大会公式Discordで共有するセッションのURLから入る。</li>
@@ -30,9 +30,12 @@ export function Participation() {
           </article>
           <article className="participation-card">
             <h3>YouTube Liveで視聴</h3>
-            <p>両日ともNUMA公式YouTubeチャンネルでライブ配信します。</p>
+            <p>Day1はNUMA公式YouTubeチャンネル、Day2はUT-virtual公式YouTubeチャンネルでライブ配信します。</p>
             <p>Day1・Day2の各配信URLは未定です。決まり次第、このページに掲載します。</p>
-            <a className="text-link" href={participationLinks.youtube} target="_blank" rel="noreferrer">NUMA公式YouTubeチャンネル <span aria-hidden="true">↗</span></a>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "16px" }}>
+              <a className="text-link" href={participationLinks.youtubeDay1} target="_blank" rel="noreferrer">Day1：NUMA公式YouTubeチャンネル <span aria-hidden="true">↗</span></a>
+              <a className="text-link" href={participationLinks.youtubeDay2} target="_blank" rel="noreferrer">Day2：UT-virtual公式YouTubeチャンネル <span aria-hidden="true">↗</span></a>
+            </div>
           </article>
           <article className="participation-card">
             <h3>困ったとき・お問い合わせ</h3>
