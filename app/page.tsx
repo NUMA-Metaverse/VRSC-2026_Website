@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { PhotoStrip } from "@/components/PhotoStrip";
 import { Timetable } from "@/components/Timetable";
+import { Lineup } from "@/components/Lineup";
 import { archivePhotos, preTimetablePhotos, preGuestPhotos, preParticipationPhotos } from "@/data/activityPhotos";
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
         <About />
         <PhotoStrip photos={preTimetablePhotos} label="タイムテーブル前の活動写真" direction="left" />
         <Timetable />
+        <Lineup />
         <PhotoStrip photos={preParticipationPhotos} label="参加・視聴方法前の活動写真" direction="right" />
         <Participation />
         <PhotoStrip photos={preGuestPhotos} label="ゲスト講演前の活動写真" direction="left" />
