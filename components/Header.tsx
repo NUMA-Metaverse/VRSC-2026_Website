@@ -7,7 +7,7 @@ export function Header() {
       <a className="brand" href="#top">
         <span className="brand-name">{event.name}</span>
       </a>
-      <nav className="site-nav" aria-label="メインナビゲーション"><a href="#about">大会について</a><a href="#participation">参加・視聴方法</a><a href="#guest">ゲスト講演</a><a href="#archive">過去の開催</a></nav>
+      <nav className="site-nav" aria-label="メインナビゲーション"><a href="#about">大会について</a><a href="#timetable">タイムテーブル</a><a href="#participation">参加・視聴方法</a><a href="#guest">ゲスト講演</a><a href="#archive">過去の開催</a></nav>
     </header>
   );
 }

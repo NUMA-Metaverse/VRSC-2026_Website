@@ -68,6 +68,17 @@ p, h1, h2, h3, figure { margin: 0; }
 .about-topics p { font-size: 11px; line-height: 1.9; color: #55544e; }
 .photo-credit { font-size: 10px; color: #62615b; margin-top: 15px; text-align: right; }
 .guest { background: #ffe0b2; }
+.timetable { background: var(--black); color: var(--paper); }
+.timetable h2 { font-size: clamp(28px, 3.2vw, 46px); font-weight: 900; letter-spacing: -.05em; }
+.timetable-intro { margin-top: 18px; font-size: 13px; line-height: 2; }
+.timetable-days { display: grid; gap: 48px; margin-top: 36px; }
+.timetable-caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.timetable-caption h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; font-size: clamp(18px, 2.4vw, 26px); font-weight: 900; }
+.timetable-caption h3 span { background: var(--yellow); color: var(--black); padding: 5px 12px; }
+.timetable-caption p { font-size: 16px; font-weight: 800; }
+.timetable-image { display: block; border: 1px solid #f7f5ec50; cursor: zoom-in; }
+.timetable-image:focus-visible { outline-color: var(--yellow); }
+.timetable-image img { width: 100%; height: auto; }
 .guest-heading h2 { margin-bottom: 38px; font-size: clamp(28px, 3.2vw, 46px); font-weight: 900; letter-spacing: -.05em; line-height: 1.5; }
 .guest-layout { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.4fr); gap: 54px; align-items: start; }
 .guest-portrait figure { padding: 9px; border: 2px solid var(--black); background: var(--paper); box-shadow: 6px 6px 0 var(--black); }
