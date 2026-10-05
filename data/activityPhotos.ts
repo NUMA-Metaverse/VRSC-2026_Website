@@ -3,13 +3,16 @@ export type ActivityPhoto = {
   alt: string;
 };
 
-// 4本の写真帯には異なる写真を割り当てる。ファイル名は public/images 内のもの。
+// 5本の写真帯には異なる写真を割り当てる。ファイル名は public/images 内のもの。
 export const heroPhotos: readonly ActivityPhoto[] = [
   { file: "image", alt: "青空の下で集まった大勢のアバターの集合写真" },
   { file: "kait-vr", alt: "星空のワールドでの団体集合写真" },
   { file: "neptunity", alt: "室内ワールドで集まる団体のメンバー" },
   { file: "2026-09-05-17-48-01", alt: "月を背景にしたステージでの記念撮影" },
   { file: "yuvr", alt: "花で飾られたワールドでの集合写真" },
+];
+
+export const preTimetablePhotos: readonly ActivityPhoto[] = [
   { file: "ku-virtual", alt: "展示の前に集まる団体のメンバー" },
   { file: "43343", alt: "夕暮れの花畑のワールドでの記念撮影" },
   { file: "hit-metaverse", alt: "団体紹介のクイズパネルの前での活動風景" },

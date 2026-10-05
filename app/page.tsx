@@ -7,7 +7,7 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { PhotoStrip } from "@/components/PhotoStrip";
 import { Timetable } from "@/components/Timetable";
-import { archivePhotos, preGuestPhotos, preParticipationPhotos } from "@/data/activityPhotos";
+import { archivePhotos, preTimetablePhotos, preGuestPhotos, preParticipationPhotos } from "@/data/activityPhotos";
 
 export default function Home() {
   return (
@@ -16,15 +16,16 @@ export default function Home() {
       <main id="main-content">
         <Hero />
         <About />
+        <PhotoStrip photos={preTimetablePhotos} label="タイムテーブル前の活動写真" direction="left" />
         <Timetable />
-        <PhotoStrip photos={preParticipationPhotos} label="参加・視聴方法前の活動写真" direction="left" />
+        <PhotoStrip photos={preParticipationPhotos} label="参加・視聴方法前の活動写真" direction="right" />
         <Participation />
-        <PhotoStrip photos={preGuestPhotos} label="ゲスト講演前の活動写真" direction="right" />
+        <PhotoStrip photos={preGuestPhotos} label="ゲスト講演前の活動写真" direction="left" />
         <GuestLecture />
         <PhotoStrip
           photos={archivePhotos}
           label="過去の開催前の活動写真"
-          direction="left"
+          direction="right"
         />
         <Archive />
       </main>
