@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { presentationDates } from "@/data/event";
+import { event, presentationDates } from "@/data/event";
 import { publicAsset } from "@/lib/site";
 import { MotionReveal } from "./ui/MotionReveal";
 
@@ -15,10 +15,14 @@ export function About() {
           <MotionReveal className="about-copy">
             <h2 id="about-title">大会について</h2>
             <p>
-              全国学生VRサークル活動報告大会では、各団体の活動報告、学生によるVR/XR制作物の発表、参加者同士の交流を行います。
+              {event.name}では、各団体の活動報告、学生によるVR/XR制作物の発表、参加者同士の交流を行います。
             </p>
             <p>
               活動内容や運営方法、制作の技術や工夫を共有し、大学・学生団体間の交流を深めることを目的としています。
+            </p>
+            <h3>XR制作物プレゼン</h3>
+            <p>
+              XR制作物プレゼンは、東京大学VRセンター主催「メタバースコンペティション」の予選を兼ねて開催されます。優秀賞受賞者には、副賞として同センターより Meta Quest 3S が進呈され、作品展示の機会も提供されます。本戦は2026年12月18日（金）・19日（土）に開催されます。
             </p>
             <div className="event-dates">
               <h3>開催日時・会場</h3>

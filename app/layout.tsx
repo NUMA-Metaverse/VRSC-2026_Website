@@ -1,3 +1,4 @@
+import { organizers } from "@/data/credits";
 import type { Metadata, Viewport } from "next";
 import {
   SITE_DESCRIPTION,
@@ -47,8 +48,8 @@ export const metadata: Metadata = {
   keywords: SITE_KEYWORDS,
   applicationName: SITE_NAME,
   category: "event",
-  creator: "全国学生VRサークル活動報告大会",
-  publisher: "全国学生VRサークル活動報告大会",
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
   alternates: {
     canonical: "/",
     languages: {
@@ -112,11 +113,11 @@ const structuredData = {
     url: SITE_URL,
     name: event.venue.label,
   },
-  organizer: {
+  organizer: organizers.map((name) => ({
     "@type": "Organization",
-    name: "全日本大学メタバース連盟 NUMA（共催：東京大学VRサークル UT-virtual）",
+    name,
     url: SITE_URL,
-  },
+  })),
   subEvent: presentationDates.map((date, index) => ({
     "@type": "Event",
     name: `${SITE_SHORT_NAME} ${index + 1}日目`,
@@ -145,4 +146,3 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     </html>
   );
 }
-
