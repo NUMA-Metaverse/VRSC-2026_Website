@@ -13,7 +13,6 @@ export function Timetable() {
       <div className="page-container">
         <MotionReveal>
           <h2 id="timetable-title">タイムテーブル</h2>
-          <p className="timetable-intro">両日とも19:00開場、19:10開会。画像をタップすると拡大してご覧いただけます。</p>
         </MotionReveal>
         <div className="timetable-days">
           {days.map((day) => (

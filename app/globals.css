@@ -70,7 +70,6 @@ p, h1, h2, h3, figure { margin: 0; }
 .guest { background: #ffe0b2; }
 .timetable { background: var(--black); color: var(--paper); }
 .timetable h2 { font-size: clamp(28px, 3.2vw, 46px); font-weight: 900; letter-spacing: -.05em; }
-.timetable-intro { margin-top: 18px; font-size: 13px; line-height: 2; }
 .timetable-days { display: grid; gap: 48px; margin-top: 36px; }
 .timetable-caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
 .timetable-caption h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; font-size: clamp(18px, 2.4vw, 26px); font-weight: 900; }
