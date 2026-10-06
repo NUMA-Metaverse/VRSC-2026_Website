@@ -3,13 +3,16 @@ export type ActivityPhoto = {
   alt: string;
 };
 
-// 4本の写真帯には異なる写真を割り当てる。ファイル名は public/images 内のもの。
+// 6本の写真帯には異なる写真を割り当てる。ファイル名は public/images 内のもの。
 export const heroPhotos: readonly ActivityPhoto[] = [
   { file: "image", alt: "青空の下で集まった大勢のアバターの集合写真" },
   { file: "kait-vr", alt: "星空のワールドでの団体集合写真" },
   { file: "neptunity", alt: "室内ワールドで集まる団体のメンバー" },
   { file: "2026-09-05-17-48-01", alt: "月を背景にしたステージでの記念撮影" },
   { file: "yuvr", alt: "花で飾られたワールドでの集合写真" },
+];
+
+export const preTimetablePhotos: readonly ActivityPhoto[] = [
   { file: "ku-virtual", alt: "展示の前に集まる団体のメンバー" },
   { file: "43343", alt: "夕暮れの花畑のワールドでの記念撮影" },
   { file: "hit-metaverse", alt: "団体紹介のクイズパネルの前での活動風景" },
@@ -32,11 +35,14 @@ export const preParticipationPhotos: readonly ActivityPhoto[] = [
   { file: "64644", alt: "星空の広がるワールドを見上げるメンバー" },
 ];
 
-export const archivePhotos: readonly ActivityPhoto[] = [
+export const preLineupPhotos: readonly ActivityPhoto[] = [
   { file: "2", alt: "野球場のワールドで遊ぶメンバー" },
   { file: "5656", alt: "バーチャル空間でのメンバー同士の記念撮影" },
   { file: "3232", alt: "2026年の文字の前でポーズを取るメンバー" },
   { file: "1212212", alt: "椅子を並べて話し合う団体の活動風景" },
+];
+
+export const archivePhotos: readonly ActivityPhoto[] = [
   { file: "6354", alt: "夜の森のワールドで集まるメンバー" },
   { file: "hokudai-metaken", alt: "アバター姿で記念撮影をする学生たち" },
   { file: "nu-digital", alt: "室内に集まって撮影したアバターの集合写真" },

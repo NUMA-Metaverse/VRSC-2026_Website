@@ -6,7 +6,9 @@ import { GuestLecture } from "@/components/GuestLecture";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { PhotoStrip } from "@/components/PhotoStrip";
-import { archivePhotos, preGuestPhotos, preParticipationPhotos } from "@/data/activityPhotos";
+import { Timetable } from "@/components/Timetable";
+import { Lineup } from "@/components/Lineup";
+import { archivePhotos, preTimetablePhotos, preLineupPhotos, preGuestPhotos, preParticipationPhotos } from "@/data/activityPhotos";
 
 export default function Home() {
   return (
@@ -15,6 +17,10 @@ export default function Home() {
       <main id="main-content">
         <Hero />
         <About />
+        <PhotoStrip photos={preTimetablePhotos} label="タイムテーブル前の活動写真" direction="left" />
+        <Timetable />
+        <PhotoStrip photos={preLineupPhotos} label="参加団体・XR制作物前の活動写真" direction="right" />
+        <Lineup />
         <PhotoStrip photos={preParticipationPhotos} label="参加・視聴方法前の活動写真" direction="left" />
         <Participation />
         <PhotoStrip photos={preGuestPhotos} label="ゲスト講演前の活動写真" direction="right" />

@@ -5,19 +5,21 @@ export type LinkItem = {
 };
 
 export type Circle = {
+  day: 1 | 2;
+  order: number;
   name: string;
   shortName: string;
-  university: string;
-  icon: string;
+  university?: string;
+  icon?: string;
   url?: string;
   referenceYear?: number;
 };
 
 export type Work = {
+  day: 1 | 2;
+  order: number;
   title: string;
-  creator: string;
-  circle: string;
-  description: string;
+  creator?: string;
   image: string;
   url?: string;
   referenceYear?: number;
