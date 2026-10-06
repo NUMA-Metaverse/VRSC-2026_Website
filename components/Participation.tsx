@@ -31,10 +31,10 @@ export function Participation() {
           <article className="participation-card">
             <h3>YouTube Liveで視聴</h3>
             <p>Day1はNUMA公式YouTubeチャンネル、Day2はUT-virtual公式YouTubeチャンネルでライブ配信します。</p>
-            <p>Day1・Day2の各配信URLは未定です。決まり次第、このページに掲載します。</p>
+            <p>各日の配信は、以下のリンクからご視聴いただけます。</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "16px" }}>
-              <a className="text-link" href={participationLinks.youtubeDay1} target="_blank" rel="noreferrer">Day1：NUMA公式YouTubeチャンネル <span aria-hidden="true">↗</span></a>
-              <a className="text-link" href={participationLinks.youtubeDay2} target="_blank" rel="noreferrer">Day2：UT-virtual公式YouTubeチャンネル <span aria-hidden="true">↗</span></a>
+              <a className="text-link" href={participationLinks.youtubeDay1} target="_blank" rel="noreferrer">Day1：10月10日（土）の配信を見る <span aria-hidden="true">↗</span></a>
+              <a className="text-link" href={participationLinks.youtubeDay2} target="_blank" rel="noreferrer">Day2：10月11日（日）の配信を見る <span aria-hidden="true">↗</span></a>
             </div>
           </article>
           <article className="participation-card">
