@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { staff } from "@/data/staff";
-import { getPeekEnabled, subscribePeekEnabled } from "@/lib/peekEnabled";
+import { getPeekBursting, getPeekEnabled, subscribePeekEnabled } from "@/lib/peekEnabled";
 import { publicAsset } from "@/lib/site";
 import { PEEK_RUSH_EVENT } from "@/lib/peekEnabled";
 
@@ -622,7 +622,7 @@ export function PeekAvatar() {
     };
 
     function show() {
-      if (document.hidden || !getPeekEnabled()) {
+      if (document.hidden || !getPeekEnabled() || getPeekBursting()) {
         scheduleNext();
         return;
       }
@@ -634,7 +634,7 @@ export function PeekAvatar() {
       image.onload = () => {
         loading = false;
         // 読み込んでいる間にオフにされたら、出さない。
-        if (!getPeekEnabled()) {
+        if (!getPeekEnabled() || getPeekBursting()) {
           scheduleNext();
           return;
         }
