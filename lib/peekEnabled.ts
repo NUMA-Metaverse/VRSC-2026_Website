@@ -39,6 +39,31 @@ export function setPeekEnabled(enabled: boolean) {
   listeners.forEach((listener) => listener());
 }
 
+// ロケットのアバターが飛んでいる間は、切り替えボタンを押せないようにする。
+const lockListeners = new Set<() => void>();
+let locked = false;
+
+export function getPeekLocked() {
+  return locked;
+}
+
+export function getServerPeekLocked() {
+  return false;
+}
+
+export function setPeekLocked(next: boolean) {
+  if (next === locked) return;
+  locked = next;
+  lockListeners.forEach((listener) => listener());
+}
+
+export function subscribePeekLocked(listener: () => void) {
+  lockListeners.add(listener);
+  return () => {
+    lockListeners.delete(listener);
+  };
+}
+
 export function subscribePeekEnabled(listener: () => void) {
   listeners.add(listener);
   return () => {

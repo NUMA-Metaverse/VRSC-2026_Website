@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { staff } from "@/data/staff";
-import { PEEK_RUSH_EVENT, subscribePeekEnabled } from "@/lib/peekEnabled";
+import { PEEK_RUSH_EVENT, setPeekLocked, subscribePeekEnabled } from "@/lib/peekEnabled";
 import { publicAsset } from "@/lib/site";
 
 // アバター表示のボタンを短い間に何度も押されたら、全員のアバターが
@@ -74,10 +74,12 @@ export function RocketAvatars() {
       animation.onfinish = () => {
         animations.delete(animation);
         image.remove();
+        if (animations.size === 0) setPeekLocked(false);
       };
     };
 
     const launchAll = () => {
+      setPeekLocked(true);
       window.dispatchEvent(new Event(PEEK_RUSH_EVENT));
       // 並び順で出る時間が偏らないよう、順番を混ぜる。
       const order = [...avatars].sort(() => Math.random() - 0.5);
@@ -99,6 +101,7 @@ export function RocketAvatars() {
       unsubscribe();
       animations.forEach((animation) => animation.cancel());
       layer.remove();
+      setPeekLocked(false);
     };
   }, []);
 
