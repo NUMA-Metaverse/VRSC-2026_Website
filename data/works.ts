@@ -1,7 +1,7 @@
 import type { Work } from "./types";
 
 // 作品名・登壇順は提供された2026年のシートに準拠。
-// 個人応募者のうちDiscord表示名が本名と一致または本名を含む場合、規約に基づきcreatorは掲載しない。
+// 個人応募者のうちDiscord表示名で本名を使用している登壇者については、許諾に基づき本名を表示。
 export const works: Work[] = [
   {
     "day": 1,
@@ -15,6 +15,7 @@ export const works: Work[] = [
     "day": 1,
     "order": 2,
     "title": "融合3次元画像を利用した遠隔手術指導(Telementoring)のシステム構築",
+    "creator": "佐野隼乙",
     "image": "/登壇資料/Day1 10月10日 Resonite/2 XR制作物プレゼン/02 融合3次元画像を利用した遠隔手術指導(Telementoring)のシステム構築/thumbnail.webp",
     "referenceYear": 2026
   },
@@ -30,6 +31,7 @@ export const works: Work[] = [
     "day": 1,
     "order": 4,
     "title": "VRでの疑似摂食行為が食欲抑制に与える影響",
+    "creator": "深谷太聖",
     "image": "/登壇資料/Day1 10月10日 Resonite/2 XR制作物プレゼン/04 VRでの疑似摂食行為が食欲抑制に与える影響/thumbnail.webp",
     "referenceYear": 2026
   },
