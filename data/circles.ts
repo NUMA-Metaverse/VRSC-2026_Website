@@ -98,6 +98,7 @@ export const circles: Circle[] = [
     "name": "みやさかうどん",
     "shortName": "みやさかうどん",
     "university": "慶應義塾大学",
+    "icon": "/登壇資料/Day2 10月11日 VRChat/1 活動報告/04 みやさかうどん/logo.webp",
     "referenceYear": 2026
   },
   {
