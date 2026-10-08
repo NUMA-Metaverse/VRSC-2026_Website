@@ -4,6 +4,7 @@ import type { StaffMember } from "./types";
 // 連絡先は、回答のうちWebページやSNSのリンクだけを載せる。
 export const staff: StaffMember[] = [
   {
+    id: "staff-01",
     name: "まるまさ",
     roles: ["運営", "企画", "ディレクション", "渉外", "司会"],
     icon: "/staff/icons/01.webp",
@@ -11,6 +12,7 @@ export const staff: StaffMember[] = [
     link: "https://x.com/MarumasaVR",
   },
   {
+    id: "staff-02",
     name: "落雁.jp",
     roles: ["運営", "企画", "プロデュース", "配信"],
     icon: "/staff/icons/02.webp",
@@ -18,6 +20,7 @@ export const staff: StaffMember[] = [
     link: "https://rakugan.jp",
   },
   {
+    id: "staff-03",
     name: "たこらぼ",
     roles: ["運営", "空間デザイン", "プログラム", "モデリング"],
     icon: "/staff/icons/03.webp",
@@ -25,6 +28,7 @@ export const staff: StaffMember[] = [
     link: "https://x.com/takolabo",
   },
   {
+    id: "staff-04",
     name: "ひつじ",
     roles: ["空間デザイン"],
     icon: "/staff/icons/04.webp",
@@ -32,6 +36,7 @@ export const staff: StaffMember[] = [
     link: "https://vrchat.com/home/user/usr_bc0d6ba5-1b79-4a8c-bb5b-28b054dab89c",
   },
   {
+    id: "staff-05",
     name: "おぼろぐも",
     roles: ["空間デザイン", "プログラム"],
     icon: "/staff/icons/05.webp",
@@ -39,6 +44,7 @@ export const staff: StaffMember[] = [
     link: "https://x.com/0boronron",
   },
   {
+    id: "staff-06",
     name: "Ogajum / Jumu",
     roles: ["撮影"],
     icon: "/staff/icons/06.webp",
@@ -46,12 +52,14 @@ export const staff: StaffMember[] = [
     link: "https://x.com/Jumu_VRC",
   },
   {
+    id: "staff-07",
     name: "yurarara",
     roles: ["Web"],
     icon: "/staff/icons/07.webp",
     avatar: { src: "/staff/07.webp", width: 403, height: 900 },
   },
   {
+    id: "staff-08",
     name: "Bismuth_83",
     roles: ["広報"],
     icon: "/staff/icons/08.webp",
@@ -59,34 +67,40 @@ export const staff: StaffMember[] = [
     link: "https://x.com/Bismuth_83617",
   },
   {
+    id: "staff-09",
     name: "ツバメ",
     roles: ["運営", "渉外", "司会"],
     icon: "/staff/icons/09.webp",
     avatar: { src: "/staff/09.webp", width: 537, height: 900 },
   },
   {
+    id: "staff-10",
     name: "ohasi",
     roles: ["グラフィックデザイン"],
     icon: "/staff/icons/10.webp",
   },
   {
+    id: "staff-11",
     name: "Neo",
     roles: ["空間デザイン"],
     icon: "/staff/icons/11.webp",
     avatar: { src: "/staff/11.webp", width: 339, height: 900 },
   },
   {
+    id: "staff-12",
     name: "Rera*C",
     roles: ["プログラム"],
     icon: "/staff/icons/12.webp",
     avatar: { src: "/staff/12.webp", width: 312, height: 900 },
   },
   {
+    id: "staff-13",
     name: "ベル",
     roles: ["空間デザイン", "プログラム"],
     icon: "/staff/icons/13.webp",
   },
   {
+    id: "staff-14",
     name: "T-fc",
     roles: ["配信"],
     icon: "/staff/icons/14.webp",
@@ -94,6 +108,7 @@ export const staff: StaffMember[] = [
     link: "https://x.com/t_fc171",
   },
   {
+    id: "staff-15",
     name: "とば",
     roles: ["配信"],
     icon: "/staff/icons/15.webp",

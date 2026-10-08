@@ -25,7 +25,7 @@ export function StaffCredits() {
               </>
             );
             return (
-              <li key={member.name} className="staff-card">
+              <li key={member.id} id={member.id} className="staff-card">
                 {member.link ? <a href={member.link} target="_blank" rel="noreferrer" aria-label={`${member.name}（${member.roles.join("、")}）のリンクを新しいタブで開く`}>{card}</a> : <div>{card}</div>}
               </li>
             );

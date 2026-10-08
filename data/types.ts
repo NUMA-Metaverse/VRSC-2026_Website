@@ -45,6 +45,8 @@ export type TimetableDay = {
 };
 
 export type StaffMember = {
+  // 一覧の各人の要素のid。左右から出るアバターを押したときの移動先になる。
+  id: string;
   name: string;
   roles: string[];
   // 一覧に出すアイコン(正方形)。クレジット収集フォームで提出されたアイコンから作る。
