@@ -279,12 +279,29 @@ p, h1, h2, h3, figure { margin: 0; }
   .staff-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .staff-card > * { flex-direction: column; align-items: center; text-align: center; }
 }
-.peek-avatar { display: none; }
-@media (min-width: 1024px) {
-  .peek-avatar { display: block; position: fixed; z-index: 40; width: var(--peek-size); pointer-events: none; opacity: 0; transition: transform .9s cubic-bezier(.22, 1, .36, 1), opacity .5s; }
-  .peek-avatar img { display: block; width: 100%; height: auto; filter: drop-shadow(0 8px 14px #17171745); }
-  .peek-avatar.is-left { left: 0; transform: translateX(-100%) rotate(var(--peek-rotation)); }
-  .peek-avatar.is-right { right: 0; transform: translateX(100%) rotate(calc(var(--peek-rotation) * -1)); }
-  .peek-avatar.is-left.is-active { opacity: 1; transform: translateX(-40%) rotate(var(--peek-rotation)); }
-  .peek-avatar.is-right.is-active { opacity: 1; transform: translateX(40%) rotate(calc(var(--peek-rotation) * -1)); }
+/* 左右から顔を出すアバター。位置は .peek-avatar で動かし、傾きは中の画像に付ける。
+   影は回さない外側に付けるので、どの傾きでも光が上から当たった向きにそろう。 */
+.peek-avatar {
+  position: fixed; z-index: 40; width: var(--peek-size); pointer-events: none; opacity: 0; will-change: transform;
+  /* 輪郭の細い白い縁で暗い背景から浮かせ、近い濃い影と遠い柔らかい影を重ねて、紙から少し浮いて見せる。 */
+  filter:
+    drop-shadow(0 0 1px rgb(255 255 255 / .9))
+    drop-shadow(var(--peek-shadow-x) 3px 3px rgb(23 23 23 / .32))
+    drop-shadow(calc(var(--peek-shadow-x) * 2.5) 14px 18px rgb(23 23 23 / .28));
+  transition: transform .9s cubic-bezier(.22, 1, .36, 1), opacity .45s;
+  -webkit-tap-highlight-color: transparent;
 }
+.peek-avatar img { display: block; width: 100%; height: auto; transform: rotate(var(--peek-rotation)); user-select: none; -webkit-user-drag: none; }
+.peek-avatar.is-left { left: env(safe-area-inset-left, 0px); --peek-shadow-x: 3px; transform: translateX(calc(-100% - 48px)); }
+.peek-avatar.is-right { right: env(safe-area-inset-right, 0px); --peek-shadow-x: -3px; transform: translateX(calc(100% + 48px)); }
+.peek-avatar.is-left.is-active { opacity: 1; transform: translateX(calc(var(--peek-hidden) * -1)); }
+.peek-avatar.is-right.is-active { opacity: 1; transform: translateX(var(--peek-hidden)); }
+.peek-avatar:focus-visible { outline: none; }
+.peek-avatar:focus-visible img { outline: 3px solid #006482; outline-offset: 4px; border-radius: 8px; }
+html.is-over-peek-avatar, html.is-over-peek-avatar * { cursor: pointer !important; }
+@media (prefers-reduced-motion: reduce) {
+  .peek-avatar.is-left { transform: translateX(calc(var(--peek-hidden) * -1)); }
+  .peek-avatar.is-right { transform: translateX(var(--peek-hidden)); }
+}
+.staff-card:target > *, .staff-card.is-flashing > * { animation: staff-flash 1.8s ease-out; }
+@keyframes staff-flash { 0%, 35% { background: var(--yellow); box-shadow: 0 0 0 3px var(--black); } 100% { background: #fffdf5; box-shadow: 0 0 0 0 transparent; } }
