@@ -1,7 +1,7 @@
 import type { Work } from "./types";
 
 // 作品名・登壇順は提供された2026年のシートに準拠。
-// 個人応募者のDiscord表示名が未確認の場合、creatorは掲載しない。
+// 個人応募者のうちDiscord表示名が本名と一致または本名を含む場合、規約に基づきcreatorは掲載しない。
 export const works: Work[] = [
   {
     "day": 1,
@@ -22,6 +22,7 @@ export const works: Work[] = [
     "day": 1,
     "order": 3,
     "title": "Storytelling from Objects",
+    "creator": "gg13",
     "image": "/登壇資料/Day1 10月10日 Resonite/2 XR制作物プレゼン/03 Storytelling from Objects/thumbnail.webp",
     "referenceYear": 2026
   },
@@ -92,6 +93,7 @@ export const works: Work[] = [
     "day": 2,
     "order": 6,
     "title": "机の上の冒険",
+    "creator": "野口",
     "image": "/登壇資料/Day2 10月11日 VRChat/2 XR制作物プレゼン/06 机の上の冒険/thumbnail.webp",
     "referenceYear": 2026
   },

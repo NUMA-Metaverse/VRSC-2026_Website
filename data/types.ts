@@ -37,11 +37,15 @@ export type Guest = {
 };
 
 export type TimetableDay = {
+  id: "day1" | "day2";
   label: string;
   date: string;
+  dateTime: string;
   venue: string;
-  isPlaceholder?: boolean;
-  slots: Array<{ time: string; title: string; kind?: "talk" | "break" | "open" }>;
+  image: string;
+  imageWidth: number;
+  imageHeight: number;
+  imageAlt: string;
 };
 
 export type StaffMember = {
