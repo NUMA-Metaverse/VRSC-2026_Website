@@ -63,8 +63,7 @@ export function Header() {
         {links.map((link) => (
           <a key={link.href} href={link.href} onClick={() => setOpen(false)}>{link.label}</a>
         ))}
-        {/* ドロワーを閉じて、出てくるアバターが見えるようにする。 */}
-        <AvatarToggle className="is-panel" onToggle={() => setOpen(false)} />
+        <AvatarToggle className="is-panel" />
       </nav>
     </header>
   );
