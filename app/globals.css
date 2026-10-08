@@ -259,7 +259,8 @@ p, h1, h2, h3, figure { margin: 0; }
   html { scroll-behavior: auto; }
   .photo-viewport { overflow-x: auto; }
   .photo-set[aria-hidden="true"] { display: none; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  /* アバターは動きを減らす設定の人にも同じように出すので、ここから外す。 */
+  *:not(.peek-avatar, .peek-avatar *), *::before, *::after { animation: none !important; transition: none !important; }
 }
 
 
@@ -342,9 +343,5 @@ p, h1, h2, h3, figure { margin: 0; }
 .peek-avatar:focus-visible { outline: none; }
 .peek-avatar:focus-visible img { outline: 3px solid #006482; outline-offset: 4px; border-radius: 8px; }
 html.is-over-peek-avatar, html.is-over-peek-avatar * { cursor: pointer !important; }
-@media (prefers-reduced-motion: reduce) {
-  .peek-avatar img, .peek-avatar.is-active img, .peek-avatar.is-leaving img { translate: 0 0; rotate: var(--peek-rotation); transition: none; animation: none; }
-  .peek-avatar.is-leaving { opacity: 0; }
-}
 .staff-card:target > *, .staff-card.is-flashing > * { animation: staff-flash 1.8s ease-out; }
 @keyframes staff-flash { 0%, 35% { background: var(--yellow); box-shadow: 0 0 0 3px var(--black); } 100% { background: #fffdf5; box-shadow: 0 0 0 0 transparent; } }

@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { PhotoStrip } from "@/components/PhotoStrip";
 import { PeekAvatar } from "@/components/PeekAvatar";
+import { RocketAvatars } from "@/components/RocketAvatars";
 import { StaffCredits } from "@/components/StaffCredits";
 import { Timetable } from "@/components/Timetable";
 import { Lineup } from "@/components/Lineup";
@@ -37,6 +38,7 @@ export default function Home() {
       </main>
       <Footer />
       <PeekAvatar />
+      <RocketAvatars />
     </>
   );
 }
