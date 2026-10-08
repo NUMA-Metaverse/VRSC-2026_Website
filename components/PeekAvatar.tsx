@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { staff } from "@/data/staff";
 import { publicAsset } from "@/lib/site";
 
@@ -94,6 +95,7 @@ function buildHitMask(image: HTMLImageElement): HitMask | null {
 }
 
 type Peek = {
+  id: number;
   member: Member;
   side: "is-left" | "is-right";
   top: number;
@@ -267,6 +269,7 @@ export function PeekAvatar() {
         const minTop = Math.max(header + 12, viewport * layout.topMin);
         const maxTop = Math.max(minTop, viewport * layout.topMax - height - 16);
         const next: Peek = {
+          id: (peekRef.current?.id ?? 0) + 1,
           member,
           side: Math.random() < 0.5 ? "is-left" : "is-right",
           top: Math.round(randomBetween(minTop, maxTop)),
@@ -275,7 +278,9 @@ export function PeekAvatar() {
           exposure: layout.exposure,
           active: false,
         };
-        update(next);
+        // 出るたびに新しい要素にする。前の要素を使い回すと、左右が入れ替わったときに、
+        // 前の位置から滑り出して画面を横切ってしまう。
+        flushSync(() => update(next));
         // 画面の外に置いてから、次のフレームで滑り込ませる。
         window.requestAnimationFrame(() =>
           window.requestAnimationFrame(() => {
@@ -301,6 +306,7 @@ export function PeekAvatar() {
 
   return (
     <a
+      key={peek.id}
       href={`#${member.id}`}
       className={`peek-avatar ${side}${active ? " is-active" : ""}`}
       aria-label={`${member.name}を制作、運営の一覧で見る`}
