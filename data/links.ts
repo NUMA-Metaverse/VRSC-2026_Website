@@ -1,9 +1,11 @@
 import type { LinkItem } from "./types";
+import { participationLinks } from "./participation";
 
 export const venueLinks: LinkItem[] = [
   { label: "Resonite", note: "Day1 会場情報は近日公開" },
   { label: "VRChat", note: "Day2 会場情報は近日公開" },
-  { label: "YouTube", note: "配信URLは近日公開" },
+  { label: "YouTube Day1", href: participationLinks.youtubeDay1, note: "10月10日（土）のライブ配信" },
+  { label: "YouTube Day2", href: participationLinks.youtubeDay2, note: "10月11日（日）のライブ配信" },
 ];
 
 export const archives: LinkItem[] = [
