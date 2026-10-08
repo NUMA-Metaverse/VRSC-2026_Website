@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { staff } from "@/data/staff";
-import { getPeekBursting, getPeekEnabled, subscribePeekEnabled } from "@/lib/peekEnabled";
+import { getPeekEnabled, getPeekQuietMs, subscribePeekEnabled } from "@/lib/peekEnabled";
 import { publicAsset } from "@/lib/site";
 import { PEEK_RUSH_EVENT } from "@/lib/peekEnabled";
 
@@ -622,8 +622,14 @@ export function PeekAvatar() {
     };
 
     function show() {
-      if (document.hidden || !getPeekEnabled() || getPeekBursting()) {
+      if (document.hidden || !getPeekEnabled()) {
         scheduleNext();
+        return;
+      }
+      // アバターが飛んでくる間とその直後は出さない。終わった頃にまた確かめる。
+      const quiet = getPeekQuietMs();
+      if (quiet > 0) {
+        scheduleNext(quiet + randomBetween(200, 600));
         return;
       }
       if (loading) return;
@@ -634,8 +640,8 @@ export function PeekAvatar() {
       image.onload = () => {
         loading = false;
         // 読み込んでいる間にオフにされたら、出さない。
-        if (!getPeekEnabled() || getPeekBursting()) {
-          scheduleNext();
+        if (!getPeekEnabled() || getPeekQuietMs() > 0) {
+          scheduleNext(getPeekQuietMs() + randomBetween(200, 600));
           return;
         }
         if (!masks.current.has(member.avatar.src)) masks.current.set(member.avatar.src, buildHitMask(image, member.avatar.src));
@@ -669,9 +675,9 @@ export function PeekAvatar() {
         window.requestAnimationFrame(() =>
           window.requestAnimationFrame(() => {
             // 滑り込む直前に演出が始まったら、出さずに引っ込める。
-            if (getPeekBursting() || !getPeekEnabled()) {
+            if (getPeekQuietMs() > 0 || !getPeekEnabled()) {
               update(null);
-              scheduleNext();
+              scheduleNext(getPeekQuietMs() + randomBetween(200, 600));
               return;
             }
             update({ ...next, active: true });

@@ -39,15 +39,22 @@ export function setPeekEnabled(enabled: boolean) {
   listeners.forEach((listener) => listener());
 }
 
-// アバターが飛び交っている間は、画面の端のアバターを出さない。
+// アバターが飛んでくる間は、画面の端のアバターを出さない。飛び終えたあとも、少しだけ間をあける。
+const BURST_GRACE_MS = 1_200;
+// 飛んでいる間に確かめ直すまでの間隔。
+const BURST_RECHECK_MS = 400;
 let bursting = false;
-
-export function getPeekBursting() {
-  return bursting;
-}
+let burstEndedAt = -Infinity;
 
 export function setPeekBursting(next: boolean) {
+  if (bursting && !next) burstEndedAt = performance.now();
   bursting = next;
+}
+
+// 画面の端のアバターを出してよくなるまでの時間(ミリ秒)。0なら、いま出してよい。
+export function getPeekQuietMs() {
+  if (bursting) return BURST_RECHECK_MS;
+  return Math.max(0, burstEndedAt + BURST_GRACE_MS - performance.now());
 }
 
 export function subscribePeekEnabled(listener: () => void) {
