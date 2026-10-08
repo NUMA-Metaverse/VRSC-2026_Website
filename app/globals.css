@@ -266,11 +266,13 @@ p, h1, h2, h3, figure { margin: 0; }
   .staff-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .staff-card > * { flex-direction: column; align-items: center; text-align: center; }
 }
-/* 左右から顔を出すアバター。外側の .peek-avatar は、頭の真下の足元(--peek-pivot)が画面の端に来る位置に置いたまま動かさない。
-   中の画像を、その足元を軸に、横に滑らせながら画面の内側へ傾けて、端の向こうから覗き込むように出す。
+/* 左右から顔を出すアバター。外側の .peek-avatar は、体の軸の上の回転の中心(--peek-pivot, --peek-origin-y)が
+   画面の端に来る位置(--peek-x)に置いたまま動かさない。位置と傾きは PeekAvatar.tsx で、顔が端で切れないように画像ごとに計算する。
+   中の画像は translate と rotate を別々に動かし、横に滑らせながら傾きを整えて、端の向こうから覗き込むように出す。
    影は回さない外側に付けるので、どの傾きでも光が上から当たった向きにそろう。 */
 .peek-avatar {
   position: fixed; z-index: 40; pointer-events: none; opacity: 0;
+  transform: translateX(var(--peek-x, 0px));
   /* 白い縁を2回重ねて太らせ、暗い背景の上でも輪郭が埋もれないようにする。
      その外に、ぼかしをほとんど入れない輪郭のはっきりした影を落とし、3DCGの落ち影のように紙から飛び出して見せる。 */
   filter:
@@ -280,24 +282,39 @@ p, h1, h2, h3, figure { margin: 0; }
   transition: opacity .3s;
   -webkit-tap-highlight-color: transparent;
 }
+.peek-avatar.is-left { left: env(safe-area-inset-left, 0px); --peek-shadow-x: 3px; }
+.peek-avatar.is-right { right: env(safe-area-inset-right, 0px); --peek-shadow-x: -3px; }
+.peek-avatar.is-active, .peek-avatar.is-leaving { opacity: 1; }
 .peek-avatar img {
-  display: block; width: 100%; height: 100%; transform-origin: var(--peek-pivot, 50%) var(--peek-origin-y, 100%); will-change: transform; user-select: none; -webkit-user-drag: none;
-  /* 引っ込むときは、体を起こしながら加速して端の向こうへ戻る。 */
-  transition: transform .8s cubic-bezier(.5, 0, .75, .25);
+  display: block; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none;
+  transform-origin: var(--peek-pivot, 50%) var(--peek-origin-y, 100%);
+  will-change: translate, rotate, transform;
+  /* 出てくる前は、止まっている姿勢より深く傾けたまま、端の向こうに隠れている。 */
+  translate: var(--peek-hide-x, -120%) 0;
+  rotate: var(--peek-hidden-rotation, 0deg);
+  /* 止まっている間は、ゆっくり少しだけ深く傾いては戻る(要素は出るたびに作り直すので、出てきた頃から揺れ始める)。 */
+  animation: peek-sway 3.6s cubic-bezier(.45, 0, .55, 1) 1.35s infinite alternate;
 }
-/* 出てくるときは、減速しながら傾き、最後に少しだけ行き過ぎて戻る。 */
-.peek-avatar.is-active img { transition: transform 1.1s cubic-bezier(.3, 1.25, .55, 1); }
-.peek-avatar.is-left { left: env(safe-area-inset-left, 0px); --peek-shadow-x: 3px; transform: translateX(calc(var(--peek-pivot, 50%) * -1 + var(--peek-offset-x, 0px))); }
-.peek-avatar.is-right { right: env(safe-area-inset-right, 0px); --peek-shadow-x: -3px; transform: translateX(calc(100% - var(--peek-pivot, 50%) + var(--peek-offset-x, 0px))); }
-.peek-avatar.is-left img { transform: translateX(calc(-100% - 32px)) rotate(0deg); }
-.peek-avatar.is-right img { transform: translateX(calc(100% + 32px)) rotate(0deg); }
-.peek-avatar.is-active { opacity: 1; }
-.peek-avatar.is-active img { transform: translateX(0) rotate(var(--peek-rotation)); }
+/* 出てくるときは、横には減速しながら行き過ぎずに止まり(行き過ぎると腰から下が端からのぞく)、
+   少し遅れて、深く傾けた姿勢から起き上がるように止まる姿勢へ落ち着く。 */
+.peek-avatar.is-active img {
+  translate: 0 0;
+  rotate: var(--peek-rotation);
+  transition: translate .85s cubic-bezier(.16, .84, .3, 1), rotate 1.3s cubic-bezier(.3, .6, .2, 1) .06s;
+}
+/* 引っ込むときは、傾きはそのままで、加速しながら端の向こうへ戻る。 */
+.peek-avatar.is-leaving img {
+  translate: var(--peek-hide-x, -120%) 0;
+  rotate: var(--peek-rotation);
+  transition: translate .7s cubic-bezier(.55, 0, .85, .35);
+}
+@keyframes peek-sway { from { transform: rotate(0deg); } to { transform: rotate(var(--peek-sway, 0deg)); } }
 .peek-avatar:focus-visible { outline: none; }
 .peek-avatar:focus-visible img { outline: 3px solid #006482; outline-offset: 4px; border-radius: 8px; }
 html.is-over-peek-avatar, html.is-over-peek-avatar * { cursor: pointer !important; }
 @media (prefers-reduced-motion: reduce) {
-  .peek-avatar img, .peek-avatar.is-active img { transform: translateX(0) rotate(var(--peek-rotation)); transition: none; }
+  .peek-avatar img, .peek-avatar.is-active img, .peek-avatar.is-leaving img { translate: 0 0; rotate: var(--peek-rotation); transition: none; animation: none; }
+  .peek-avatar.is-leaving { opacity: 0; }
 }
 .staff-card:target > *, .staff-card.is-flashing > * { animation: staff-flash 1.8s ease-out; }
 @keyframes staff-flash { 0%, 35% { background: var(--yellow); box-shadow: 0 0 0 3px var(--black); } 100% { background: #fffdf5; box-shadow: 0 0 0 0 transparent; } }
