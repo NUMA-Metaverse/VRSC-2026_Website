@@ -1,7 +1,7 @@
 import type { Circle } from "./types";
 
-// 2026年の登壇順。所属は登壇エントリーの回答による。
-// KU-virtual、北海道大学メタバース研究会、nu_digital、Neptunity の所属は、確認がとれてから載せる。
+// 2026年の登壇順。所属大学は、登壇エントリーで回答された内容のみを載せる。
+// エントリーで「なし」と回答した KU-virtual は載せない。
 export const circles: Circle[] = [
   {
     "day": 1,
@@ -53,6 +53,7 @@ export const circles: Circle[] = [
     "order": 6,
     "name": "北海道大学メタバース研究会",
     "shortName": "北海道大学メタバース研究会",
+    "university": "北海道科学大学",
     "icon": "/登壇資料/Day1 10月10日 Resonite/1 活動報告/06 北海道大学メタバース研究会/logo.webp",
     "referenceYear": 2026
   },
@@ -113,6 +114,7 @@ export const circles: Circle[] = [
     "order": 6,
     "name": "nu_digital",
     "shortName": "nu_digital",
+    "university": "日本大学",
     "icon": "/登壇資料/Day2 10月11日 VRChat/1 活動報告/06 nu_digital/logo.webp",
     "referenceYear": 2026
   },
@@ -121,6 +123,7 @@ export const circles: Circle[] = [
     "order": 7,
     "name": "Neptunity",
     "shortName": "Neptunity",
+    "university": "共愛学園前橋国際大学",
     "icon": "/登壇資料/Day2 10月11日 VRChat/1 活動報告/07 Neptunity/logo.webp",
     "referenceYear": 2026
   }
