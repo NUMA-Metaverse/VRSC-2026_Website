@@ -13,4 +13,13 @@ export const archives: LinkItem[] = [
   { label: "2024", href: "https://vrsc-2024.utvirtual.tech/", note: "全国学生VRサークル活動報告大会" },
   { label: "2023", href: "https://vrsc-2023.utvirtual.tech/", note: "全国学生VRサークル活動報告大会" },
   { label: "2022", href: "https://vrsc-2022.utvirtual.tech/", note: "全国学生VRサークル活動報告大会" },
+  { label: "2018", href: "https://www.moguravr.com/vr-student-circle/", note: "第1回 全国学生VRサークル活動報告大会（10月27日開催、clusterとYouTube Live、12団体が登壇。当時の記事）" },
 ];
+
+export const officialLinks = {
+  x: { label: "大会公式X", href: "https://x.com/vrsc_jp", note: "@vrsc_jp" },
+  organizers: [
+    { label: "全日本大学メタバース連盟 NUMA", href: "https://numa-meta.com/" },
+    { label: "東京大学VRサークル UT-virtual", href: "https://utvirtual.tech/" },
+  ],
+} as const;

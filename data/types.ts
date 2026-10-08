@@ -26,12 +26,14 @@ export type Work = {
 };
 
 export type Guest = {
+  day: 1 | 2;
   name: string;
-  affiliation: string;
-  profile: string;
+  honorific: string;
+  role: string;
+  profile: string[];
   image: string;
-  url?: string;
-  referenceYear?: number;
+  imageWidth: number;
+  imageHeight: number;
 };
 
 export type TimetableDay = {
@@ -40,4 +42,16 @@ export type TimetableDay = {
   venue: string;
   isPlaceholder?: boolean;
   slots: Array<{ time: string; title: string; kind?: "talk" | "break" | "open" }>;
+};
+
+export type StaffMember = {
+  // 一覧の各人の要素のid。左右から出るアバターを押したときの移動先になる。
+  id: string;
+  name: string;
+  roles: string[];
+  // 一覧に出すアイコン(正方形)。クレジット収集フォームで提出されたアイコンから作る。
+  icon: string;
+  // 全身のアバター画像。提出した人だけ持ち、ページ左右の演出に使う。
+  avatar?: { src: string; width: number; height: number };
+  link?: string;
 };
