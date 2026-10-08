@@ -7,6 +7,8 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { News } from "@/components/News";
 import { PhotoStrip } from "@/components/PhotoStrip";
+import { PeekAvatar } from "@/components/PeekAvatar";
+import { StaffCredits } from "@/components/StaffCredits";
 import { Timetable } from "@/components/Timetable";
 import { Lineup } from "@/components/Lineup";
 import { archivePhotos, preTimetablePhotos, preLineupPhotos, preGuestPhotos, preParticipationPhotos } from "@/data/activityPhotos";
@@ -33,8 +35,10 @@ export default function Home() {
           direction="left"
         />
         <Archive />
+        <StaffCredits />
       </main>
       <Footer />
+      <PeekAvatar />
     </>
   );
 }
