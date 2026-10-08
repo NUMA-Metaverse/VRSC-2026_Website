@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { staff } from "@/data/staff";
+import { getPeekEnabled, subscribePeekEnabled } from "@/lib/peekEnabled";
 import { publicAsset } from "@/lib/site";
 
 // ぶいなびの記事ページと同じように、時間をおいて左右どちらかの画面の端から、
@@ -15,7 +16,9 @@ type Member = (typeof members)[number];
 const FIRST_DELAY_MS = 10_000;
 const INTERVAL_MIN_MS = 3_000;
 const INTERVAL_MAX_MS = 6_000;
-const VISIBLE_MS = 7_000;
+const VISIBLE_MS = 5_000;
+// マウスを外した(キーボードの選択を外した)あとも、これだけは出したままにする。
+const RELEASE_MS = 1_500;
 const HIDE_MS = 900;
 
 // 画像ごとの、頭(髪、耳、帽子、頭に乗せた物まで含む)が収まる枠と、足元の横の位置。
@@ -493,6 +496,8 @@ export function PeekAvatar() {
   useEffect(() => {
     if (members.length === 0) return;
     const mobile = window.matchMedia("(max-width: 1023px)");
+    const drawer = window.matchMedia("(max-width: 760px)");
+    const isDrawerOpen = () => drawer.matches && !!document.querySelector(".site-header.is-open");
     const timers = new Set<number>();
     let hideTimer: number | undefined;
     let queue: Member[] = [];
@@ -517,6 +522,12 @@ export function PeekAvatar() {
     let lastSide: "is-left" | "is-right" | undefined;
     let sideRepeatCount = 0;
     const nextSide = (): "is-left" | "is-right" => {
+      // 狭い画面でメニューのドロワー(右側)を開いている間だけ、アバターは必ず左側から出す。
+      if (isDrawerOpen()) {
+        lastSide = "is-left";
+        sideRepeatCount = 1;
+        return lastSide;
+      }
       if (!lastSide) {
         lastSide = Math.random() < 0.5 ? "is-left" : "is-right";
         sideRepeatCount = 1;
@@ -545,7 +556,19 @@ export function PeekAvatar() {
       timers.add(id);
       return id;
     };
-    const scheduleNext = (delay = randomBetween(INTERVAL_MIN_MS, INTERVAL_MAX_MS)) => later(show, delay);
+    // 次に出すための予約は常に1つだけ。新しく予約するときは前の予約を取り消す。
+    let nextTimer: number | undefined;
+    let loading = false;
+    const scheduleNext = (delay = randomBetween(INTERVAL_MIN_MS, INTERVAL_MAX_MS)) => {
+      if (nextTimer !== undefined) {
+        window.clearTimeout(nextTimer);
+        timers.delete(nextTimer);
+      }
+      nextTimer = later(() => {
+        nextTimer = undefined;
+        show();
+      }, delay);
+    };
 
     // 全員が1回ずつ出てから次の周に入る。周の変わり目で同じ人が続かないようにする。
     const nextMember = () => {
@@ -568,7 +591,7 @@ export function PeekAvatar() {
       holding.current.hover = false;
       document.documentElement.classList.remove("is-over-peek-avatar");
       update({ ...current, active: false, leaving: true });
-      later(() => scheduleNext(), HIDE_MS);
+      scheduleNext(HIDE_MS + randomBetween(INTERVAL_MIN_MS, INTERVAL_MAX_MS));
     };
     hideRef.current = hide;
 
@@ -582,18 +605,26 @@ export function PeekAvatar() {
       }, delay);
     };
     releaseRef.current = () => {
-      if (peekRef.current?.active) scheduleHide(HIDE_MS);
+      if (peekRef.current?.active) scheduleHide(RELEASE_MS);
     };
 
     function show() {
-      if (document.hidden) {
+      if (document.hidden || !getPeekEnabled()) {
         scheduleNext();
         return;
       }
+      if (loading) return;
+      loading = true;
       const member = nextMember();
       const image = new Image();
       image.decoding = "async";
       image.onload = () => {
+        loading = false;
+        // 読み込んでいる間にオフにされたら、出さない。
+        if (!getPeekEnabled()) {
+          scheduleNext();
+          return;
+        }
         if (!masks.current.has(member.avatar.src)) masks.current.set(member.avatar.src, buildHitMask(image, member.avatar.src));
         const header = document.querySelector(".site-header")?.getBoundingClientRect().bottom ?? 0;
         const zone = nextZone();
@@ -629,12 +660,28 @@ export function PeekAvatar() {
           }),
         );
       };
-      image.onerror = () => scheduleNext();
+      image.onerror = () => {
+        loading = false;
+        scheduleNext();
+      };
       image.src = publicAsset(member.avatar.src);
     }
 
+    // ヘッダーのボタンでオフにしたとき、出ているアバターをすぐ引っ込める。
+    const unsubscribe = subscribePeekEnabled(() => {
+      if (!getPeekEnabled()) {
+        hide();
+        return;
+      }
+      // オンにしたときは、次の順番を待たずにすぐ誰かを出す。
+      // 読み込み中なら、そのまま出てくる。いま出ているなら、そのままにする。
+      if (loading || peekRef.current?.active) return;
+      scheduleNext(0);
+    });
+
     scheduleNext(FIRST_DELAY_MS);
     return () => {
+      unsubscribe();
       timers.forEach((id) => window.clearTimeout(id));
       hideRef.current = () => {};
       releaseRef.current = () => {};
