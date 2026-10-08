@@ -18,19 +18,63 @@ const INTERVAL_MAX_MS = 6_000;
 const VISIBLE_MS = 7_000;
 const HIDE_MS = 900;
 
-// 画面の幅で大きさと出し方を変える。スマートフォンでは小さくし、本文を隠しにくい下寄りに出す。
+// 画面の幅で大きさと出し方を変える。スマートフォンでは小さくする。
+// アバターは全身の立ち絵なので、横幅ではなく背の高さでそろえる。
+// 頭の真下の足元を画面の角の外(端の上、下の端より下)に置き、そこを軸に体を画面の内側へ傾けて、
+// 画面の端の向こうから身を乗り出して覗き込むように見せる。下半身は画面の下に隠れる。
+// sinkMin, sinkMax は、足元を画面の下の端からどれだけ下に沈めるか(背の高さに対する割合)。
 const LAYOUTS = {
-  desktop: { sizeMin: 160, sizeMax: 240, exposure: 0.6, rotationMax: 15, topMin: 0.08, topMax: 1 },
-  mobile: { sizeMin: 92, sizeMax: 128, exposure: 0.5, rotationMax: 10, topMin: 0.35, topMax: 1 },
+  desktop: { heightMin: 420, heightMax: 520, rotationMin: 16, rotationMax: 22, sinkMin: 0.26, sinkMax: 0.4 },
+  mobile: { heightMin: 250, heightMax: 300, rotationMin: 14, rotationMax: 18, sinkMin: 0.28, sinkMax: 0.4 },
 } as const;
 
 // 押せる範囲の判定に使う、アバター画像の形の粗い地図。
 // 透過していない部分を少し太らせ、周りを囲まれた透過の穴は埋める。
 // こうすると、髪の隙間や1ピクセルだけ透けた所を押しても反応が途切れない。
-type HitMask = { cols: number; rows: number; cells: Uint8Array };
+// headX は頭の横の位置(画像の幅に対する割合)。画像の中で人が真ん中に立っているとは限らず、
+// 翼や広がった服で左右にずれるので、傾ける軸を頭の真下に合わせるのに使う。
+type HitMask = { cols: number; rows: number; cells: Uint8Array; headX: number };
 const MASK_COLS = 96;
 const ALPHA_THRESHOLD = 24;
 const DILATE_CELLS = 2;
+
+// 人の上から8%から22%の帯(おおむね頭の高さ)の各行で、透過していない所がいちばん長く続く区間の中心を取り、
+// その中央値を頭の位置とする。いちばん長い区間だけを見るので、頭の横に離れて上げた腕や翼に引っ張られない。
+function findHeadX(opaque: Uint8Array, cols: number, rows: number) {
+  let top = -1;
+  let bottom = -1;
+  for (let y = 0; y < rows; y += 1) {
+    for (let x = 0; x < cols; x += 1) {
+      if (!opaque[y * cols + x]) continue;
+      if (top < 0) top = y;
+      bottom = y;
+      break;
+    }
+  }
+  if (top < 0) return 0.5;
+  const span = bottom - top;
+  const centers: number[] = [];
+  for (let y = top + Math.floor(span * 0.08); y <= top + Math.floor(span * 0.22); y += 1) {
+    let best = 0;
+    let center = -1;
+    let run = 0;
+    for (let x = 0; x <= cols; x += 1) {
+      if (x < cols && opaque[y * cols + x]) {
+        run += 1;
+        continue;
+      }
+      if (run > best) {
+        best = run;
+        center = x - run / 2;
+      }
+      run = 0;
+    }
+    if (center >= 0) centers.push(center);
+  }
+  if (centers.length === 0) return 0.5;
+  centers.sort((a, b) => a - b);
+  return centers[Math.floor(centers.length / 2)] / cols;
+}
 
 function buildHitMask(image: HTMLImageElement): HitMask | null {
   const cols = MASK_COLS;
@@ -91,7 +135,7 @@ function buildHitMask(image: HTMLImageElement): HitMask | null {
   }
   const cells = new Uint8Array(cols * rows);
   for (let i = 0; i < cells.length; i += 1) cells[i] = outside[i] ? 0 : 1;
-  return { cols, rows, cells };
+  return { cols, rows, cells, headX: findHeadX(opaque, cols, rows) };
 }
 
 type Peek = {
@@ -99,9 +143,10 @@ type Peek = {
   member: Member;
   side: "is-left" | "is-right";
   top: number;
-  size: number;
+  width: number;
+  height: number;
   rotation: number;
-  exposure: number;
+  headX: number;
   active: boolean;
 };
 
@@ -143,7 +188,8 @@ export function PeekAvatar() {
     const width = image.offsetWidth;
     const height = image.offsetHeight;
     if (!width || !height) return false;
-    // 画像は中心を軸に回しているので、中心からのずれを逆向きに回して元の座標に戻す。
+    // 傾けた画像の外接矩形の中心は、画像の中心と一致する。
+    // 中心からのずれを逆向きに回して、傾ける前の座標に戻す。
     const angle = (current.side === "is-left" ? current.rotation : -current.rotation) * (Math.PI / 180);
     const dx = clientX - (rect.left + rect.width / 2);
     const dy = clientY - (rect.top + rect.height / 2);
@@ -262,20 +308,23 @@ export function PeekAvatar() {
       image.decoding = "async";
       image.onload = () => {
         if (!masks.current.has(member.avatar.src)) masks.current.set(member.avatar.src, buildHitMask(image));
-        const size = Math.round(randomBetween(layout.sizeMin, layout.sizeMax));
-        const height = (size * member.avatar.height) / member.avatar.width;
         const viewport = window.innerHeight;
         const header = document.querySelector(".site-header")?.getBoundingClientRect().bottom ?? 0;
-        const minTop = Math.max(header + 12, viewport * layout.topMin);
-        const maxTop = Math.max(minTop, viewport * layout.topMax - height - 16);
+        const rotation = Math.round(randomBetween(layout.rotationMin, layout.rotationMax));
+        const sink = randomBetween(layout.sinkMin, layout.sinkMax);
+        // 傾けたときの頭のてっぺんが、ヘッダーの下に収まる高さまでに抑える。
+        const fit = (viewport - header - 16) / (Math.cos((rotation * Math.PI) / 180) - sink);
+        const height = Math.round(Math.max(120, Math.min(randomBetween(layout.heightMin, layout.heightMax), fit)));
+        const width = Math.round((height * member.avatar.width) / member.avatar.height);
         const next: Peek = {
           id: (peekRef.current?.id ?? 0) + 1,
           member,
           side: Math.random() < 0.5 ? "is-left" : "is-right",
-          top: Math.round(randomBetween(minTop, maxTop)),
-          size,
-          rotation: Math.round(randomBetween(0, layout.rotationMax)),
-          exposure: layout.exposure,
+          top: Math.round(viewport + sink * height - height),
+          width,
+          height,
+          rotation,
+          headX: masks.current.get(member.avatar.src)?.headX ?? 0.5,
           active: false,
         };
         // 出るたびに新しい要素にする。前の要素を使い回すと、左右が入れ替わったときに、
@@ -326,9 +375,10 @@ export function PeekAvatar() {
       }}
       style={{
         top: peek.top,
-        "--peek-size": `${peek.size}px`,
+        width: peek.width,
+        height: peek.height,
         "--peek-rotation": `${side === "is-left" ? peek.rotation : -peek.rotation}deg`,
-        "--peek-hidden": `${(1 - peek.exposure) * 100}%`,
+        "--peek-pivot": `${peek.headX * 100}%`,
       } as React.CSSProperties}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}

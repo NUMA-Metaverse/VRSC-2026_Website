@@ -5,7 +5,6 @@ import { Footer } from "@/components/Footer";
 import { GuestLecture } from "@/components/GuestLecture";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { News } from "@/components/News";
 import { PhotoStrip } from "@/components/PhotoStrip";
 import { PeekAvatar } from "@/components/PeekAvatar";
 import { StaffCredits } from "@/components/StaffCredits";
@@ -20,7 +19,6 @@ export default function Home() {
       <main id="main-content">
         <Hero />
         <About />
-        <News />
         <PhotoStrip photos={preTimetablePhotos} label="タイムテーブル前の活動写真" direction="left" />
         <Timetable />
         <PhotoStrip photos={preLineupPhotos} label="参加団体・XR制作物前の活動写真" direction="right" />
