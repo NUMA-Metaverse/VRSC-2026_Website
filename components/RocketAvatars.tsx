@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { staff } from "@/data/staff";
-import { subscribePeekEnabled } from "@/lib/peekEnabled";
+import { PEEK_RUSH_EVENT, subscribePeekEnabled } from "@/lib/peekEnabled";
 import { publicAsset } from "@/lib/site";
 
 // アバター表示のボタンを短い間に何度も押されたら、全員のアバターが
@@ -78,6 +78,7 @@ export function RocketAvatars() {
     };
 
     const launchAll = () => {
+      window.dispatchEvent(new Event(PEEK_RUSH_EVENT));
       // 並び順で出る時間が偏らないよう、順番を混ぜる。
       const order = [...avatars].sort(() => Math.random() - 0.5);
       order.forEach((avatar) => launch(avatar, Math.random() * STAGGER_MS));

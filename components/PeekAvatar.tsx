@@ -5,6 +5,7 @@ import { flushSync } from "react-dom";
 import { staff } from "@/data/staff";
 import { getPeekEnabled, subscribePeekEnabled } from "@/lib/peekEnabled";
 import { publicAsset } from "@/lib/site";
+import { PEEK_RUSH_EVENT } from "@/lib/peekEnabled";
 
 // ぶいなびの記事ページと同じように、時間をおいて左右どちらかの画面の端から、
 // 制作と運営に関わった人のアバターがランダムに1体ずつ顔を出す。
@@ -388,6 +389,7 @@ type Peek = Layout & {
   zone: VerticalZone;
   active: boolean;
   leaving: boolean;
+  rushing?: boolean;
 };
 
 function randomBetween(min: number, max: number) {
@@ -580,7 +582,7 @@ export function PeekAvatar() {
       return last;
     };
 
-    const hide = () => {
+    const hide = (rushing = false) => {
       if (hideTimer !== undefined) {
         window.clearTimeout(hideTimer);
         timers.delete(hideTimer);
@@ -590,10 +592,21 @@ export function PeekAvatar() {
       if (!current?.active) return;
       holding.current.hover = false;
       document.documentElement.classList.remove("is-over-peek-avatar");
-      update({ ...current, active: false, leaving: true });
+      update({ ...current, active: false, leaving: true, rushing });
       scheduleNext(HIDE_MS + randomBetween(INTERVAL_MIN_MS, INTERVAL_MAX_MS));
     };
-    hideRef.current = hide;
+    hideRef.current = () => hide();
+    // ロケットのアバターが飛び出すときは、出ているアバターがすごい速さで端へ戻る。
+    // すでにゆっくり引っ込み始めているもの(5回目のボタンでオフになった場合など)も、速い引っ込みに切り替える。
+    const onRush = () => {
+      const current = peekRef.current;
+      if (current?.leaving) {
+        if (!current.rushing) update({ ...current, rushing: true });
+        return;
+      }
+      hide(true);
+    };
+    window.addEventListener(PEEK_RUSH_EVENT, onRush);
 
     const scheduleHide = (delay: number) => {
       if (hideTimer !== undefined) window.clearTimeout(hideTimer);
@@ -682,6 +695,7 @@ export function PeekAvatar() {
     scheduleNext(FIRST_DELAY_MS);
     return () => {
       unsubscribe();
+      window.removeEventListener(PEEK_RUSH_EVENT, onRush);
       timers.forEach((id) => window.clearTimeout(id));
       hideRef.current = () => {};
       releaseRef.current = () => {};
@@ -696,7 +710,7 @@ export function PeekAvatar() {
       key={peek.id}
       ref={containerRef}
       href={`#${member.id}`}
-      className={`peek-avatar ${side}${active ? " is-active" : ""}${peek.leaving ? " is-leaving" : ""}`}
+      className={`peek-avatar ${side}${active ? " is-active" : ""}${peek.leaving ? " is-leaving" : ""}${peek.rushing ? " is-rushing" : ""}`}
       aria-label={`${member.name}を制作、運営の一覧で見る`}
       aria-hidden={!active}
       tabIndex={active ? 0 : -1}

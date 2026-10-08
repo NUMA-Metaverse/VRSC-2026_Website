@@ -1,5 +1,8 @@
 // 顔を出すアバターのオンオフの設定。ヘッダーのボタンと PeekAvatar で共有する。
 
+// ロケットのアバターが飛び出すとき、画面の端に出ているアバターを急いで引っ込めるための合図。
+export const PEEK_RUSH_EVENT = "peek-avatar-rush";
+
 const STORAGE_KEY = "peek-avatar-enabled";
 const listeners = new Set<() => void>();
 let current = true;

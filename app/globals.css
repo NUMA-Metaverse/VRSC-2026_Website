@@ -339,6 +339,8 @@ p, h1, h2, h3, figure { margin: 0; }
   rotate: var(--peek-rotation);
   transition: translate .7s cubic-bezier(.55, 0, .85, .35);
 }
+/* ロケットのアバターが飛び出すときは、すごい速さで端の向こうへ戻る。 */
+.peek-avatar.is-rushing img { transition: translate .14s cubic-bezier(.4, 0, 1, 1); }
 @keyframes peek-sway { from { transform: rotate(0deg); } to { transform: rotate(var(--peek-sway, 0deg)); } }
 .peek-avatar:focus-visible { outline: none; }
 .peek-avatar:focus-visible img { outline: 3px solid #006482; outline-offset: 4px; border-radius: 8px; }
