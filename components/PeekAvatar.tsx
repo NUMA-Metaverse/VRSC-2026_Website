@@ -18,16 +18,6 @@ const INTERVAL_MAX_MS = 6_000;
 const VISIBLE_MS = 7_000;
 const HIDE_MS = 900;
 
-// 画面の幅で大きさと出し方を変える。スマートフォンでは小さくする。
-// アバターは全身の立ち絵なので、横幅ではなく背の高さでそろえる。
-// 頭の真下の足元を画面の角の外(端の上、下の端より下)に置き、そこを軸に体を画面の内側へ傾けて、
-// 画面の端の向こうから身を乗り出して覗き込むように見せる。下半身は画面の下に隠れる。
-// sinkMin, sinkMax は、足元を画面の下の端からどれだけ下に沈めるか(背の高さに対する割合)。
-const LAYOUTS = {
-  desktop: { heightMin: 420, heightMax: 520, rotationMin: 16, rotationMax: 22, sinkMin: 0.26, sinkMax: 0.4 },
-  mobile: { heightMin: 250, heightMax: 300, rotationMin: 14, rotationMax: 18, sinkMin: 0.28, sinkMax: 0.4 },
-} as const;
-
 // 押せる範囲の判定に使う、アバター画像の形の粗い地図。
 // 透過していない部分を少し太らせ、周りを囲まれた透過の穴は埋める。
 // こうすると、髪の隙間や1ピクセルだけ透けた所を押しても反応が途切れない。
@@ -138,15 +128,20 @@ function buildHitMask(image: HTMLImageElement): HitMask | null {
   return { cols, rows, cells, headX: findHeadX(opaque, cols, rows) };
 }
 
+type VerticalZone = "top" | "middle" | "bottom";
+
 type Peek = {
   id: number;
   member: Member;
   side: "is-left" | "is-right";
+  zone: VerticalZone;
   top: number;
   width: number;
   height: number;
   rotation: number;
   headX: number;
+  originY: number;
+  offsetX: number;
   active: boolean;
 };
 
@@ -166,6 +161,7 @@ function shuffled<T>(items: T[]) {
 export function PeekAvatar() {
   const [peek, setPeek] = useState<Peek | null>(null);
   const peekRef = useRef<Peek | null>(null);
+  const containerRef = useRef<HTMLAnchorElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const masks = useRef(new Map<string, HitMask | null>());
   const holding = useRef({ hover: false, focus: false });
@@ -180,21 +176,32 @@ export function PeekAvatar() {
   // 画面上の点が、いま出ているアバターの押せる範囲に入っているか。
   const hitTest = useCallback((clientX: number, clientY: number) => {
     const current = peekRef.current;
-    const image = imageRef.current;
-    if (!current?.active || !image) return false;
+    const container = containerRef.current;
+    if (!current?.active || !container) return false;
     const mask = masks.current.get(current.member.avatar.src);
     if (!mask) return false;
-    const rect = image.getBoundingClientRect();
-    const width = image.offsetWidth;
-    const height = image.offsetHeight;
+    const rect = container.getBoundingClientRect();
+    const width = current.width;
+    const height = current.height;
     if (!width || !height) return false;
-    // 傾けた画像の外接矩形の中心は、画像の中心と一致する。
-    // 中心からのずれを逆向きに回して、傾ける前の座標に戻す。
-    const angle = (current.side === "is-left" ? current.rotation : -current.rotation) * (Math.PI / 180);
-    const dx = clientX - (rect.left + rect.width / 2);
-    const dy = clientY - (rect.top + rect.height / 2);
-    const u = (dx * Math.cos(angle) + dy * Math.sin(angle)) / width + 0.5;
-    const v = (-dx * Math.sin(angle) + dy * Math.cos(angle)) / height + 0.5;
+
+    // container は画面端に配置されており、img は container 内で (originX, originY) を中心に回転している。
+    const theta = (current.side === "is-left" ? current.rotation : -current.rotation) * (Math.PI / 180);
+    const originX = width * current.headX;
+    const originY = height * current.originY;
+
+    // container 左上からの相対座標
+    const relX = clientX - rect.left;
+    const relY = clientY - rect.top;
+
+    // 回転中心からのベクトルを逆回転してテクスチャ座標 (u, v) を逆算
+    const dx = relX - originX;
+    const dy = relY - originY;
+    const px = dx * Math.cos(-theta) - dy * Math.sin(-theta) + originX;
+    const py = dx * Math.sin(-theta) + dy * Math.cos(-theta) + originY;
+
+    const u = px / width;
+    const v = py / height;
     if (u < 0 || u >= 1 || v < 0 || v >= 1) return false;
     return mask.cells[Math.floor(v * mask.rows) * mask.cols + Math.floor(u * mask.cols)] === 1;
   }, []);
@@ -248,6 +255,45 @@ export function PeekAvatar() {
     let hideTimer: number | undefined;
     let queue: Member[] = [];
     let last: Member | undefined;
+
+    // 上・中・下のゾーンを均等に巡回させるシャッフルバッグ
+    let zoneBag: VerticalZone[] = [];
+    let lastZone: VerticalZone | undefined;
+    const nextZone = (): VerticalZone => {
+      if (zoneBag.length === 0) {
+        zoneBag = shuffled(["top", "middle", "bottom"] as VerticalZone[]);
+        if (zoneBag.length > 1 && zoneBag[0] === lastZone) {
+          const first = zoneBag.shift()!;
+          zoneBag.push(first);
+        }
+      }
+      lastZone = zoneBag.shift()!;
+      return lastZone;
+    };
+
+    // 左右の偏りを防ぎ、交互をベースにしつつ適度な揺らぎ（連続最大2回）を保つ
+    let lastSide: "is-left" | "is-right" | undefined;
+    let sideRepeatCount = 0;
+    const nextSide = (): "is-left" | "is-right" => {
+      if (!lastSide) {
+        lastSide = Math.random() < 0.5 ? "is-left" : "is-right";
+        sideRepeatCount = 1;
+        return lastSide;
+      }
+      if (sideRepeatCount >= 2) {
+        lastSide = lastSide === "is-left" ? "is-right" : "is-left";
+        sideRepeatCount = 1;
+        return lastSide;
+      }
+      const flip = Math.random() < 0.75;
+      if (flip) {
+        lastSide = lastSide === "is-left" ? "is-right" : "is-left";
+        sideRepeatCount = 1;
+      } else {
+        sideRepeatCount += 1;
+      }
+      return lastSide;
+    };
 
     const later = (callback: () => void, delay: number) => {
       const id = window.setTimeout(() => {
@@ -303,28 +349,85 @@ export function PeekAvatar() {
         return;
       }
       const member = nextMember();
-      const layout = mobile.matches ? LAYOUTS.mobile : LAYOUTS.desktop;
       const image = new Image();
       image.decoding = "async";
       image.onload = () => {
         if (!masks.current.has(member.avatar.src)) masks.current.set(member.avatar.src, buildHitMask(image));
         const viewport = window.innerHeight;
         const header = document.querySelector(".site-header")?.getBoundingClientRect().bottom ?? 0;
-        const rotation = Math.round(randomBetween(layout.rotationMin, layout.rotationMax));
-        const sink = randomBetween(layout.sinkMin, layout.sinkMax);
-        // 傾けたときの頭のてっぺんが、ヘッダーの下に収まる高さまでに抑える。
-        const fit = (viewport - header - 16) / (Math.cos((rotation * Math.PI) / 180) - sink);
-        const height = Math.round(Math.max(120, Math.min(randomBetween(layout.heightMin, layout.heightMax), fit)));
+        const safeHeaderBottom = Math.max(header + 16, 72);
+
+        const zone = nextZone();
+        const side = nextSide();
+        const headX = masks.current.get(member.avatar.src)?.headX ?? 0.5;
+
+        let height: number;
+        let top: number;
+        let rotation: number;
+        let originY: number;
+        let offsetX: number;
+
+        if (zone === "bottom") {
+          // 画面下端の角から身を乗り出す。足元は画面下端に隠れる。
+          const heightMin = mobile.matches ? 240 : 400;
+          const heightMax = mobile.matches ? 290 : 500;
+          const rotationMin = mobile.matches ? 14 : 16;
+          const rotationMax = mobile.matches ? 18 : 22;
+          const sinkMin = mobile.matches ? 0.28 : 0.26;
+          const sinkMax = mobile.matches ? 0.40 : 0.38;
+
+          rotation = Math.round(randomBetween(rotationMin, rotationMax));
+          const sink = randomBetween(sinkMin, sinkMax);
+          const fit = (viewport - safeHeaderBottom) / (Math.cos((rotation * Math.PI) / 180) - sink);
+          height = Math.round(Math.max(120, Math.min(randomBetween(heightMin, heightMax), fit)));
+          top = Math.round(viewport + sink * height - height);
+          originY = 1.0;
+          offsetX = 0;
+        } else if (zone === "middle") {
+          // 画面中央付近の壁から顔と上半身を覗き込む。
+          // 腰（originY: 0.52）を中心に傾けることで、足元は壁の向こう（画面外）に隠れる。
+          const heightMin = mobile.matches ? 220 : 340;
+          const heightMax = mobile.matches ? 270 : 430;
+          const rotationMin = mobile.matches ? 10 : 12;
+          const rotationMax = mobile.matches ? 14 : 16;
+
+          rotation = Math.round(randomBetween(rotationMin, rotationMax));
+          height = Math.round(randomBetween(heightMin, heightMax));
+          const zoneCenter = viewport * 0.5;
+          const jitter = randomBetween(-viewport * 0.08, viewport * 0.08);
+          top = Math.round(Math.max(safeHeaderBottom + 16, Math.min(viewport - height * 0.5, zoneCenter + jitter - height * 0.4)));
+          originY = 0.52;
+          offsetX = side === "is-left" ? -18 : 18;
+        } else {
+          // 上部ゾーン: ヘッダー下〜中央上の壁から顔を覗き込む。
+          const heightMin = mobile.matches ? 200 : 320;
+          const heightMax = mobile.matches ? 250 : 400;
+          const rotationMin = mobile.matches ? 9 : 11;
+          const rotationMax = mobile.matches ? 13 : 15;
+
+          rotation = Math.round(randomBetween(rotationMin, rotationMax));
+          height = Math.round(randomBetween(heightMin, heightMax));
+          const zoneTop = safeHeaderBottom + 16;
+          const zoneBottom = Math.max(zoneTop + 30, viewport * 0.36);
+          top = Math.round(randomBetween(zoneTop, zoneBottom));
+          originY = 0.52;
+          offsetX = side === "is-left" ? -18 : 18;
+        }
+
         const width = Math.round((height * member.avatar.width) / member.avatar.height);
+
         const next: Peek = {
           id: (peekRef.current?.id ?? 0) + 1,
           member,
-          side: Math.random() < 0.5 ? "is-left" : "is-right",
-          top: Math.round(viewport + sink * height - height),
+          side,
+          zone,
+          top,
           width,
           height,
           rotation,
-          headX: masks.current.get(member.avatar.src)?.headX ?? 0.5,
+          headX,
+          originY,
+          offsetX,
           active: false,
         };
         // 出るたびに新しい要素にする。前の要素を使い回すと、左右が入れ替わったときに、
@@ -356,6 +459,7 @@ export function PeekAvatar() {
   return (
     <a
       key={peek.id}
+      ref={containerRef}
       href={`#${member.id}`}
       className={`peek-avatar ${side}${active ? " is-active" : ""}`}
       aria-label={`${member.name}を制作、運営の一覧で見る`}
@@ -379,6 +483,8 @@ export function PeekAvatar() {
         height: peek.height,
         "--peek-rotation": `${side === "is-left" ? peek.rotation : -peek.rotation}deg`,
         "--peek-pivot": `${peek.headX * 100}%`,
+        "--peek-origin-y": `${peek.originY * 100}%`,
+        "--peek-offset-x": `${peek.offsetX}px`,
       } as React.CSSProperties}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
