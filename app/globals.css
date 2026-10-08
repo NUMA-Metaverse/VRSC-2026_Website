@@ -271,11 +271,12 @@ p, h1, h2, h3, figure { margin: 0; }
    影は回さない外側に付けるので、どの傾きでも光が上から当たった向きにそろう。 */
 .peek-avatar {
   position: fixed; z-index: 40; pointer-events: none; opacity: 0;
-  /* 輪郭の細い白い縁で暗い背景から浮かせ、近い濃い影と遠い柔らかい影を重ねて、紙から少し浮いて見せる。 */
+  /* 輪郭の細い白い縁で暗い背景から浮かせ、ぼかしをほとんど入れない輪郭のはっきりした影を2段重ねて、
+     3DCGの落ち影のように紙から飛び出して見せる。 */
   filter:
     drop-shadow(0 0 1px rgb(255 255 255 / .9))
-    drop-shadow(var(--peek-shadow-x) 3px 3px rgb(23 23 23 / .32))
-    drop-shadow(calc(var(--peek-shadow-x) * 2.5) 14px 18px rgb(23 23 23 / .28));
+    drop-shadow(var(--peek-shadow-x) 2px 0 rgb(23 23 23 / .55))
+    drop-shadow(calc(var(--peek-shadow-x) * 4) 14px 2px rgb(23 23 23 / .45));
   transition: opacity .3s;
   -webkit-tap-highlight-color: transparent;
 }
