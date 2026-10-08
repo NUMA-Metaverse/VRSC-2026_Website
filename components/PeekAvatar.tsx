@@ -668,6 +668,12 @@ export function PeekAvatar() {
         // 画面の外に置いてから、次のフレームで滑り込ませる。
         window.requestAnimationFrame(() =>
           window.requestAnimationFrame(() => {
+            // 滑り込む直前に演出が始まったら、出さずに引っ込める。
+            if (getPeekBursting() || !getPeekEnabled()) {
+              update(null);
+              scheduleNext();
+              return;
+            }
             update({ ...next, active: true });
             scheduleHide(VISIBLE_MS);
           }),
