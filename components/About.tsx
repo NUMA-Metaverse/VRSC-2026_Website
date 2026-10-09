@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Picture } from "./ui/Picture";
 import { event, presentationDates } from "@/data/event";
 import { publicAsset } from "@/lib/site";
 import { MotionReveal } from "./ui/MotionReveal";
@@ -34,7 +34,7 @@ export function About() {
           <MotionReveal className="photo-collage" effect="photo" delay={0.12}>
             <figure className="collage-main">
               <div>
-                <Image
+                <Picture
                   src={publicAsset("/images/kait-vr.webp")}
                   alt="星空が広がるワールドに集まる団体の仲間たち"
                   fill
@@ -44,7 +44,7 @@ export function About() {
             </figure>
             <figure className="collage-small">
               <div>
-                <Image
+                <Picture
                   src={publicAsset("/images/hokudai-metaken.webp")}
                   alt="アバター姿で記念撮影を楽しむ学生たち"
                   fill

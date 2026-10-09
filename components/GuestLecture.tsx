@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Picture } from "./ui/Picture";
 import { guests } from "@/data/guests";
 import { publicAsset } from "@/lib/site";
 import { MotionReveal } from "./ui/MotionReveal";
@@ -24,11 +24,9 @@ export function GuestLecture() {
             <div className="guest-layout" key={guest.day}>
               <MotionReveal className="guest-portrait" effect="photo">
                 <figure>
-                  <Image
+                  <Picture
                     src={publicAsset(guest.image)}
                     alt={`${guest.name}${guest.honorific}のプロフィール写真`}
-                    width={guest.imageWidth}
-                    height={guest.imageHeight}
                     sizes="(max-width: 760px) calc(100vw - 60px), 440px"
                   />
                   <figcaption>

@@ -16,5 +16,6 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ### 2. Assets & Naming Conventions
 - Web公開されるファイルパス、アセット名、データ定義に個人名（提出者の本名等）を含めない。
-- 画像ファイル名は標準化する（活動報告ロゴは `logo.webp`、制作物サムネイルは `thumbnail.webp`）。
+- 画像ファイル名は標準化する（活動報告ロゴは `logo.webp`、制作物サムネイルは `thumbnail.png`）。
+- 制作物サムネイルは、提出された元の画像（Googleドライブの登壇資料フォルダ）をPNGのまま置く。表示用の縮小やAVIF/WebPへの変換はビルド時に `scripts/build-images.mts` が自動で行うため、手で縮小・変換した画像を置かない。
 - ディレクトリ名は個人名ではなく作品タイトルまたはサークル名を使用する。

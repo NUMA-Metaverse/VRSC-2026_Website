@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Picture } from "./ui/Picture";
 import { staff } from "@/data/staff";
 import { publicAsset } from "@/lib/site";
 import { MotionReveal } from "./ui/MotionReveal";
@@ -16,7 +16,7 @@ export function StaffCredits() {
             const card = (
               <>
                 <div className="staff-icon">
-                  <Image src={publicAsset(member.icon)} alt="" width={240} height={240} sizes="56px" />
+                  <Picture src={publicAsset(member.icon)} alt="" sizes="56px" />
                 </div>
                 <div className="staff-copy">
                   <p className="staff-name">{member.name}{member.link && <span aria-hidden="true"> ↗</span>}</p>

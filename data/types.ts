@@ -32,8 +32,6 @@ export type Guest = {
   role: string;
   profile: string[];
   image: string;
-  imageWidth: number;
-  imageHeight: number;
 };
 
 export type TimetableDay = {
@@ -43,8 +41,6 @@ export type TimetableDay = {
   dateTime: string;
   venue: string;
   image: string;
-  imageWidth: number;
-  imageHeight: number;
   imageAlt: string;
 };
 

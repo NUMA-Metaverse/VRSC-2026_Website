@@ -57,10 +57,9 @@ Open Graph・Xのカードには、指定の `public/ogp.png` をそのまま使
 
 ## 動き
 
-- Motion for React（旧Framer Motion）13.2.0を使用。導入時のnpm最新安定版を確認し、バージョンを固定。
+- 読み込みを軽くするため、アニメーションのライブラリは使わない。`components/ui/MotionReveal.tsx` がブラウザの Web Animations API と IntersectionObserver で動かす。
 - メインビジュアルは初回に短くフェードしながら原寸表示へ。スクロールに合わせて参加案内、大会紹介、写真、募集カードが一度だけ現れる。
-- 参加案内ボタンはホバーで少し浮き、押した時に縮むスプリングアニメーション。
 - 写真帯は既存のCSSによる連続スクロールを維持する。
-- 本文はサーバー描画時から表示し、JavaScriptなしでも内容やリンクを利用できる。動きを減らす設定ではMotionの移動・拡大も停止する。
-- 公式ドキュメント：[インストール](https://motion.dev/docs/react-installation)、[useAnimate](https://motion.dev/docs/react-use-animate)、[useReducedMotion](https://motion.dev/docs/react-use-reduced-motion)。
+- 本文はサーバー描画時から表示し、JavaScriptなしでも内容やリンクを利用できる。動きを減らす設定では移動・拡大も停止する。
+- 公式ドキュメント：[Web Animations API](https://developer.mozilla.org/docs/Web/API/Web_Animations_API)、[IntersectionObserver](https://developer.mozilla.org/docs/Web/API/IntersectionObserver)。
 
