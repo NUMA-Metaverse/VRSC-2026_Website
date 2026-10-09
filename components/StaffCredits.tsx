@@ -1,6 +1,5 @@
 import { Picture } from "./ui/Picture";
 import { staff } from "@/data/staff";
-import { publicAsset } from "@/lib/site";
 import { MotionReveal } from "./ui/MotionReveal";
 
 export function StaffCredits() {
@@ -16,7 +15,7 @@ export function StaffCredits() {
             const card = (
               <>
                 <div className="staff-icon">
-                  <Picture src={publicAsset(member.icon)} alt="" sizes="56px" />
+                  <Picture src={member.icon} alt="" sizes="56px" />
                 </div>
                 <div className="staff-copy">
                   <p className="staff-name">{member.name}{member.link && <span aria-hidden="true"> ↗</span>}</p>

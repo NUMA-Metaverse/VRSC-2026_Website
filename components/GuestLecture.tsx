@@ -1,6 +1,5 @@
 import { Picture } from "./ui/Picture";
 import { guests } from "@/data/guests";
-import { publicAsset } from "@/lib/site";
 import { MotionReveal } from "./ui/MotionReveal";
 
 const dayLabels = {
@@ -25,7 +24,7 @@ export function GuestLecture() {
               <MotionReveal className="guest-portrait" effect="photo">
                 <figure>
                   <Picture
-                    src={publicAsset(guest.image)}
+                    src={guest.image}
                     alt={`${guest.name}${guest.honorific}のプロフィール写真`}
                     sizes="(max-width: 760px) calc(100vw - 60px), 440px"
                   />

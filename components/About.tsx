@@ -1,6 +1,5 @@
 import { Picture } from "./ui/Picture";
 import { event, presentationDates } from "@/data/event";
-import { publicAsset } from "@/lib/site";
 import { MotionReveal } from "./ui/MotionReveal";
 
 export function About() {
@@ -35,7 +34,7 @@ export function About() {
             <figure className="collage-main">
               <div>
                 <Picture
-                  src={publicAsset("/images/kait-vr.webp")}
+                  src="/images/kait-vr.webp"
                   alt="星空が広がるワールドに集まる団体の仲間たち"
                   fill
                   sizes="(max-width: 760px) 80vw, 38vw"
@@ -45,7 +44,7 @@ export function About() {
             <figure className="collage-small">
               <div>
                 <Picture
-                  src={publicAsset("/images/hokudai-metaken.webp")}
+                  src="/images/hokudai-metaken.webp"
                   alt="アバター姿で記念撮影を楽しむ学生たち"
                   fill
                   sizes="(max-width: 760px) 48vw, 22vw"

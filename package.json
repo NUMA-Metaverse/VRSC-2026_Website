@@ -11,6 +11,7 @@
     "dev": "next dev",
     "prebuild": "npm run images",
     "build": "next build",
+    "postbuild": "node scripts/prune-images.mts",
     "start": "next start",
     "lint": "eslint",
     "pretypecheck": "npm run images",

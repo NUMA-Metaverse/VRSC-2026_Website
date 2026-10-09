@@ -1,5 +1,5 @@
-import { fullImageUrl, Picture } from "./ui/Picture";
-import { publicAsset } from "@/lib/site";
+import { Picture } from "./ui/Picture";
+import { fullImageUrl } from "@/lib/imageAssets";
 import { MotionReveal } from "./ui/MotionReveal";
 
 import { timetable } from "@/data/timetable";
@@ -19,9 +19,9 @@ export function Timetable() {
                   <h3><span>{day.label}</span><time dateTime={day.dateTime}>{day.date}</time></h3>
                   <p>{day.venue}</p>
                 </figcaption>
-                <a className="timetable-image" href={fullImageUrl(publicAsset(day.image))} target="_blank" rel="noopener noreferrer" aria-label={`${day.label}のタイムテーブルを拡大表示（新しいタブ）`}>
+                <a className="timetable-image" href={fullImageUrl(day.image)} target="_blank" rel="noopener noreferrer" aria-label={`${day.label}のタイムテーブルを拡大表示（新しいタブ）`}>
                   <Picture
-                    src={publicAsset(day.image)}
+                    src={day.image}
                     alt={day.imageAlt}
                     sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1100px) calc(100vw - 64px), (max-width: 1296px) calc(100vw - 96px), 1200px"
                   />

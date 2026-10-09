@@ -21,7 +21,7 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
       },
       {
-        src: siteUrl("/icon.png"),
+        src: siteUrl(fixedPngPath("icon-400.png")),
         sizes: "400x400",
         type: "image/png",
       },

@@ -1,6 +1,9 @@
-// 画像の書き出し方の決まり。ビルド前に画像を作るスクリプト(scripts/build-images.ts)と、
+// 画像の書き出し方の決まり。ビルド前に画像を作るスクリプト(scripts/build-images.mts)と、
 // 画像を表示する部品(components/ui/Picture.tsx)の両方がこれに従う。
-// public/ に置いた画像は、ここに書いた幅と形式の画像に自動で書き出される。
+// assets/ に置いた元の画像は、ここに書いた幅と形式の画像に自動で書き出され、書き出したものだけが公開される。
+
+// 元の画像を置くフォルダ。ここは公開しない。
+export const IMAGE_SOURCE_DIR = "assets";
 
 // 書き出す幅。元の画像より大きい幅は作らず、代わりに元の幅のものを作る。
 export const IMAGE_WIDTHS = [96, 160, 256, 384, 640, 960, 1280, 1920, 2560] as const;
@@ -17,6 +20,7 @@ export const FIXED_PNGS = [
   { src: "/icon.png", width: 48, name: "favicon-48.png" },
   { src: "/icon.png", width: 180, name: "apple-touch-icon.png" },
   { src: "/icon.png", width: 192, name: "icon-192.png" },
+  { src: "/icon.png", width: 400, name: "icon-400.png" },
 ] as const;
 
 export type FixedPngName = (typeof FIXED_PNGS)[number]["name"];

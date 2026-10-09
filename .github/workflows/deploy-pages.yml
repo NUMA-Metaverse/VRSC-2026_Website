@@ -41,7 +41,7 @@ jobs:
           path: |
             public/_img
             lib/generated
-          key: ${{ runner.os }}-images-${{ hashFiles('public/**', 'lib/images.ts', 'scripts/build-images.mts', 'package-lock.json') }}
+          key: ${{ runner.os }}-images-${{ hashFiles('assets/**', 'lib/images.ts', 'scripts/build-images.mts', 'package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-images-
 
