@@ -1,7 +1,7 @@
-import { fullImageUrl, Picture } from "./ui/Picture";
+import { Picture } from "./ui/Picture";
 import { circles } from "@/data/circles";
 import { works } from "@/data/works";
-import { publicAsset } from "@/lib/site";
+import { fullImageUrl } from "@/lib/imageAssets";
 
 const days = [
   { day: 1, date: "10.10 SAT", venue: "Resonite" },
@@ -32,7 +32,7 @@ export function Lineup() {
                     <li key={`${circle.day}-${circle.order}`} className="circle-card">
                       <span className="lineup-number" aria-label={`登壇順${circle.order}`}>{String(circle.order).padStart(2, "0")}</span>
                       <div className="circle-icon">
-                        {circle.icon ? <Picture src={publicAsset(circle.icon)} alt="" fill sizes="48px" /> : <span aria-hidden="true">{circle.shortName.slice(0, 2)}</span>}
+                        {circle.icon ? <Picture src={circle.icon} alt="" fill sizes="48px" /> : <span aria-hidden="true">{circle.shortName.slice(0, 2)}</span>}
                       </div>
                       <div className="circle-copy"><p>{circle.name}</p>{circle.university && <small>{circle.university}</small>}</div>
                     </li>
@@ -47,8 +47,8 @@ export function Lineup() {
                 <ol className="work-grid">
                   {dayWorks.map((work) => (
                     <li key={`${work.day}-${work.order}`} className="work-card">
-                      <a className="work-image" href={fullImageUrl(publicAsset(work.image))} target="_blank" rel="noopener noreferrer" aria-label={`${work.title}のサムネイルを拡大（新しいタブ）`}>
-                        <Picture src={publicAsset(work.image)} alt={work.title} fill sizes="(max-width: 560px) calc((100vw - 52px) / 2), (max-width: 900px) calc((100vw - 96px) / 3), 282px" />
+                      <a className="work-image" href={fullImageUrl(work.image)} target="_blank" rel="noopener noreferrer" aria-label={`${work.title}のサムネイルを拡大（新しいタブ）`}>
+                        <Picture src={work.image} alt={work.title} fill sizes="(max-width: 560px) calc((100vw - 52px) / 2), (max-width: 900px) calc((100vw - 96px) / 3), 282px" />
                         <span className="work-number" aria-label={`登壇順${work.order}`}>{String(work.order).padStart(2, "0")}</span>
                       </a>
                       <div className="work-copy"><h5>{work.title}</h5>{work.creator && <p>{work.creator}</p>}</div>

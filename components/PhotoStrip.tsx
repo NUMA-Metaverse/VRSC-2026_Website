@@ -1,6 +1,5 @@
 import { Picture } from "./ui/Picture";
 import type { ActivityPhoto } from "@/data/activityPhotos";
-import { publicAsset } from "@/lib/site";
 
 export function PhotoStrip({ photos, label, direction = "left", eager = false }: {
   photos: readonly ActivityPhoto[];
@@ -18,7 +17,7 @@ export function PhotoStrip({ photos, label, direction = "left", eager = false }:
               {photos.map((photo) => (
                 <div className="strip-photo" key={photo.file}>
                   <Picture
-                    src={publicAsset(`/images/${photo.file}.webp`)}
+                    src={`/images/${photo.file}.webp`}
                     alt={duplicate ? "" : photo.alt}
                     fill
                     sizes="(max-width: 900px) 200px, (max-width: 1636px) 22vw, 360px"

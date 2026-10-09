@@ -1,20 +1,12 @@
 import type { CSSProperties } from "react";
-import manifestJson from "@/lib/generated/image-manifest.json";
-import { IMAGE_FORMATS, type ImageFormat, type ImageInfo, type ImageManifest, variantPath, variantWidths } from "@/lib/images";
+import { getImage } from "@/lib/imageAssets";
+import { IMAGE_FORMATS, type ImageFormat, type ImageInfo, variantPath, variantWidths } from "@/lib/images";
 
 // ビルド前に scripts/build-images.mts が書き出した画像を、<picture> で出し分ける。
 // ブラウザは対応している形式のうち軽いものを選び、sizes と画面の細かさに合った幅の画像を読む。
 // ウィンドウを広げたり拡大したりして足りなくなれば、より大きな幅の画像に自動で切り替わる。
 
-const manifest: ImageManifest = manifestJson;
-
 const FILL_STYLE: CSSProperties = { position: "absolute", inset: 0, width: "100%", height: "100%" };
-
-function getImage(src: string) {
-  const image = manifest[src];
-  if (!image) throw new Error(`画像 ${src} が見つかりません。public/ に置いてから npm run images を実行してください。`);
-  return image;
-}
 
 // sizes がすべて px で決まっているとき(アイコンなど)は、画面の細かさが3倍の端末で足りる幅までに絞る。
 // srcset が短くなり、HTMLが軽くなる。vw などを含むときは、すべての幅を並べる。
@@ -33,15 +25,8 @@ function srcSet(image: ImageInfo, widths: number[], format: ImageFormat) {
   return widths.map((width) => `${variantPath(image, width, format)} ${width}w`).join(", ");
 }
 
-// 新しいタブで拡大して見るときの、いちばん大きな画像。
-export function fullImageUrl(src: string) {
-  const image = getImage(src);
-  const widths = variantWidths(image.width);
-  return variantPath(image, widths[widths.length - 1], IMAGE_FORMATS[IMAGE_FORMATS.length - 1]);
-}
-
 type PictureProps = {
-  // public/ からのパス。例: "/images/a.webp"
+  // assets/ からのパス。例: "/images/a.webp"
   src: string;
   alt: string;
   // 画面の上でこの画像が表示される幅。

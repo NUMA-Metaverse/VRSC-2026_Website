@@ -10,6 +10,7 @@ import {
   siteUrl,
 } from "@/lib/site";
 import { event, presentationDates } from "@/data/event";
+import { fullImageUrl } from "@/lib/imageAssets";
 import { fixedPngPath } from "@/lib/images";
 import "./globals.css";
 
@@ -108,7 +109,7 @@ const structuredData = {
   alternateName: SITE_SHORT_NAME,
   description: SITE_DESCRIPTION,
   url: SITE_URL,
-  image: [siteUrl("/ogp.jpg"), siteUrl("/event-2026/hero.webp")],
+  image: [siteUrl("/ogp.jpg"), siteUrl(fullImageUrl("/event-2026/hero.webp"))],
   startDate: presentationDates[0].dateTime,
   endDate: "2026-10-11T22:50:00+09:00",
   eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",

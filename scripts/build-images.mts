@@ -1,7 +1,8 @@
-// public/ の画像から、表示する大きさに合った幅のAVIFとWebPを書き出す。
+// assets/ の元の画像から、表示する大きさに合った幅のAVIFとWebPを public/_img/ に書き出す。
 // npm run dev と npm run build の前に自動で動く。前回から変わっていない画像は作り直さない。
+// assets/ は公開されず、書き出したものだけが公開される。
 //
-//   public/images/a.webp → public/_img/<hash>-{96,160,...}.{avif,webp}
+//   assets/images/a.webp → public/_img/<hash>-{96,160,...}.{avif,webp}
 //
 // ファビコンなど決まった名前で使う画像は、lib/images.ts の FIXED_PNGS に従ってPNGでも書き出す。
 // 元の画像のパスと、幅・高さ・hash の対応は lib/generated/image-manifest.json に書き、<Picture> がそれを読む。
@@ -17,6 +18,7 @@ import {
   fixedPngPath,
   IMAGE_FORMATS,
   IMAGE_OUTPUT_DIR,
+  IMAGE_SOURCE_DIR,
   IMAGE_WIDTHS,
   type ImageFormat,
   type ImageInfo,
@@ -25,6 +27,7 @@ import {
   variantWidths,
 } from "../lib/images.ts";
 
+const SOURCE_DIR = path.resolve(IMAGE_SOURCE_DIR);
 const PUBLIC_DIR = path.resolve("public");
 const OUTPUT_DIR = path.join(PUBLIC_DIR, IMAGE_OUTPUT_DIR);
 const MANIFEST_PATH = path.resolve("lib/generated/image-manifest.json");
@@ -46,13 +49,15 @@ async function* walk(dir: string): AsyncGenerator<string> {
   }
 }
 
-// public/ からの位置を、サイトでのパスの書き方("/images/a.webp")にする。
-const toSitePath = (file: string) => `/${path.relative(PUBLIC_DIR, file).split(path.sep).join("/")}`;
-const toFilePath = (sitePath: string) => path.join(PUBLIC_DIR, ...sitePath.split("/"));
+// 元の画像は、assets/ からの位置("/images/a.webp")で呼ぶ。
+const toSourceKey = (file: string) => `/${path.relative(SOURCE_DIR, file).split(path.sep).join("/")}`;
+const toSourceFile = (key: string) => path.join(SOURCE_DIR, ...key.split("/"));
+// 書き出したものは、サイトでのURL("/_img/...")から public/ の中の位置にする。
+const toPublicFile = (url: string) => path.join(PUBLIC_DIR, ...url.split("/"));
 
 const variantsOf = (image: ImageInfo) =>
   variantWidths(image.width).flatMap((width) =>
-    IMAGE_FORMATS.map((format) => ({ width, format, file: toFilePath(variantPath(image, width, format)) })),
+    IMAGE_FORMATS.map((format) => ({ width, format, file: toPublicFile(variantPath(image, width, format)) })),
   );
 
 async function readManifest(): Promise<ImageManifest> {
@@ -68,7 +73,7 @@ const writing = new Map<string, Promise<void>>();
 
 async function buildImage(src: string, previous: ImageInfo | undefined): Promise<{ info: ImageInfo; built: boolean }> {
   // sharp にパスを渡すと、Windowsでは元の画像を開いたままになることがあるので、中身を読んで渡す。
-  const input = await readFile(toFilePath(src));
+  const input = await readFile(toSourceFile(src));
   const hash = createHash("sha256").update(SETTINGS).update(input).digest("hex").slice(0, 16);
   if (previous?.hash === hash && variantsOf(previous).every(({ file }) => existsSync(file))) {
     return { info: previous, built: false };
@@ -93,9 +98,8 @@ async function main() {
   await mkdir(OUTPUT_DIR, { recursive: true });
 
   const sources: string[] = [];
-  for await (const file of walk(PUBLIC_DIR)) {
-    if (file.startsWith(OUTPUT_DIR + path.sep)) continue;
-    if (SOURCE_EXTENSIONS.has(path.extname(file).toLowerCase())) sources.push(toSitePath(file));
+  for await (const file of walk(SOURCE_DIR)) {
+    if (SOURCE_EXTENSIONS.has(path.extname(file).toLowerCase())) sources.push(toSourceKey(file));
   }
   sources.sort();
 
@@ -117,14 +121,14 @@ async function main() {
 
   // 決まった名前のPNG。小さく軽いので、毎回作り直す。
   await Promise.all(FIXED_PNGS.map(async ({ src, width, name }) => {
-    const input = await readFile(toFilePath(src));
-    await sharp(input).autoOrient().resize({ width }).png({ palette: true, effort: 10 }).toFile(toFilePath(fixedPngPath(name)));
+    const input = await readFile(toSourceFile(src));
+    await sharp(input).autoOrient().resize({ width }).png({ palette: true, effort: 10 }).toFile(toPublicFile(fixedPngPath(name)));
   }));
 
   // 元の画像を消したり差し替えたりしたときに残る、古い書き出しを片付ける。
   const expected = new Set([
     ...sources.flatMap((src) => variantsOf(manifest[src]).map(({ file }) => file)),
-    ...FIXED_PNGS.map(({ name }) => toFilePath(fixedPngPath(name))),
+    ...FIXED_PNGS.map(({ name }) => toPublicFile(fixedPngPath(name))),
   ]);
   for (const name of await readdir(OUTPUT_DIR)) {
     const file = path.join(OUTPUT_DIR, name);
