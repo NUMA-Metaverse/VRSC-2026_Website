@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { fixedPngPath } from "@/lib/images";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, siteUrl } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -14,6 +15,11 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#e73d35",
     lang: "ja",
     icons: [
+      {
+        src: siteUrl(fixedPngPath("icon-192.png")),
+        sizes: "192x192",
+        type: "image/png",
+      },
       {
         src: siteUrl("/icon.png"),
         sizes: "400x400",

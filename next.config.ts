@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: localDevOrigins,
   output: "export",
   trailingSlash: true,
+  // 画像は next/image ではなく components/ui/Picture.tsx を使う。
+  // 縮小と変換は、ビルド前に scripts/build-images.mts が行う。
   images: {
     unoptimized: true,
   },

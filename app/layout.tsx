@@ -10,6 +10,7 @@ import {
   siteUrl,
 } from "@/lib/site";
 import { event, presentationDates } from "@/data/event";
+import { fixedPngPath } from "@/lib/images";
 import "./globals.css";
 
 const verificationOther = {
@@ -47,6 +48,11 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION,
   keywords: SITE_KEYWORDS,
   applicationName: SITE_NAME,
+  // 元の public/icon.png から、ビルド前に小さく書き出したもの。
+  icons: {
+    icon: [{ url: fixedPngPath("favicon-48.png"), sizes: "48x48", type: "image/png" }],
+    apple: [{ url: fixedPngPath("apple-touch-icon.png"), sizes: "180x180", type: "image/png" }],
+  },
   category: "event",
   creator: SITE_NAME,
   publisher: SITE_NAME,

@@ -13,8 +13,6 @@ export const guests: Guest[] = [
       "技術そのものを目的とするのではなく、「触った人のお楽しみが2倍になる」体験を目指し、VRだからこそ実現できる新しい遊びやエンターテインメントを追求している。",
     ],
     image: "/guest/day1-keynote.webp",
-    imageWidth: 1200,
-    imageHeight: 800,
   },
   {
     day: 2,
@@ -29,7 +27,5 @@ export const guests: Guest[] = [
       "Day2では、事前に収録した講演映像を上映します。",
     ],
     image: "/guest/day2-keynote.webp",
-    imageWidth: 753,
-    imageHeight: 921,
   },
 ];

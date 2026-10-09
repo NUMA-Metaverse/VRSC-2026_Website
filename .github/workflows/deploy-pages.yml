@@ -1,8 +1,10 @@
-name: Deploy Next.js site to GitHub Pages
+name: Build and deploy to GitHub Pages
 
+# プルリクエストでは確認とビルドだけを行い、main への push で公開する。
 on:
   push:
     branches: ["main"]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -12,8 +14,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: pages-${{ github.event_name == 'pull_request' && github.ref || 'deploy' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -25,13 +27,36 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
+      # 書き出した画像は、元の画像と書き出しの設定が同じなら使い回す。
+      # 古いキャッシュから始めても、変わった画像だけをスクリプトが作り直す。
+      - name: Restore generated images
+        uses: actions/cache@v4
+        with:
+          path: |
+            public/_img
+            lib/generated
+          key: ${{ runner.os }}-images-${{ hashFiles('public/**', 'lib/images.ts', 'scripts/build-images.mts', 'package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-images-
+
+      - name: Generate images
+        run: npm run images
+
+      # 書き出した画像の一覧(lib/generated)を読むコードがあるので、画像を作ってから確かめる。
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
       - name: Setup Pages
+        if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
 
       - name: Restore Next.js cache
@@ -54,11 +79,13 @@ jobs:
           NEXT_PUBLIC_NAVER_SITE_VERIFICATION: ${{ vars.NEXT_PUBLIC_NAVER_SITE_VERIFICATION || secrets.NEXT_PUBLIC_NAVER_SITE_VERIFICATION }}
 
       - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
           path: ./out
 
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
