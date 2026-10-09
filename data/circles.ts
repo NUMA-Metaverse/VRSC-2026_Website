@@ -1,7 +1,6 @@
 import type { Circle } from "./types";
 
-// 2026年の登壇順。所属大学は、登壇エントリーで回答された内容のみを載せる。
-// エントリーで「なし」と回答した KU-virtual は載せない。
+// 2026年の登壇順。
 export const circles: Circle[] = [
   {
     "day": 1,
@@ -71,6 +70,7 @@ export const circles: Circle[] = [
     "order": 1,
     "name": "KU-virtual",
     "shortName": "KU-virtual",
+    "university": "京都大学",
     "icon": "/登壇資料/Day2 10月11日 VRChat/1 活動報告/01 KU-virtual/logo.png",
     "referenceYear": 2026
   },
