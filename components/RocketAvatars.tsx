@@ -57,7 +57,7 @@ export function RocketAvatars() {
       image.src = publicAsset(avatar.src);
       image.alt = "";
       image.draggable = false;
-      image.style.cssText = `position:absolute;left:0;top:0;width:${imageWidth}px;height:${size}px;max-width:none;opacity:0;will-change:transform;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));`;
+      image.style.cssText = `position:absolute;left:0;top:0;width:${imageWidth}px;height:${size}px;max-width:none;opacity:0;will-change:transform;filter:drop-shadow(0 6px 1px rgba(23,23,23,.6));`;
       layer.appendChild(image);
 
       const pose = (x: number, y: number, turn: number, scale: number) =>

@@ -309,7 +309,7 @@ p, h1, h2, h3, figure { margin: 0; }
   filter:
     drop-shadow(0 0 1px rgb(255 255 255))
     drop-shadow(0 0 1px rgb(255 255 255))
-    drop-shadow(calc(var(--peek-shadow-x) * 4) 14px 1px rgb(23 23 23 / .5));
+    drop-shadow(calc(var(--peek-shadow-x) * 4) 14px 0 rgb(23 23 23 / .65));
   transition: opacity .3s;
   -webkit-tap-highlight-color: transparent;
 }
