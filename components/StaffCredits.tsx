@@ -25,7 +25,14 @@ export function StaffCredits() {
             );
             return (
               <li key={member.id} id={member.id} className="staff-card">
-                {member.link ? <a href={member.link} target="_blank" rel="noreferrer" aria-label={`${member.name}（${member.roles.join("、")}）のリンクを新しいタブで開く`}>{card}</a> : <div>{card}</div>}
+                {member.link ? (
+                  <a href={member.link} target="_blank" rel="noreferrer">
+                    {card}
+                    <span className="sr-only">（新しいタブで開く）</span>
+                  </a>
+                ) : (
+                  <div>{card}</div>
+                )}
               </li>
             );
           })}
