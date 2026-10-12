@@ -2,6 +2,7 @@ import type { Guest } from "./types";
 
 export const guests: Guest[] = [
   {
+    id: "guest-01",
     day: 1,
     name: "オレンジ",
     honorific: "氏",
@@ -13,8 +14,10 @@ export const guests: Guest[] = [
       "技術そのものを目的とするのではなく、「触った人のお楽しみが2倍になる」体験を目指し、VRだからこそ実現できる新しい遊びやエンターテインメントを追求している。",
     ],
     image: "/guest/day1-keynote.webp",
+    avatar: { src: "/guest/01.webp", width: 324, height: 900 },
   },
   {
+    id: "guest-02",
     day: 2,
     name: "葛岡 英明",
     honorific: "先生",
@@ -29,6 +32,7 @@ export const guests: Guest[] = [
     image: "/guest/day2-keynote.webp",
   },
   {
+    id: "guest-03",
     day: 2,
     name: "雨宮 智浩",
     honorific: "先生",

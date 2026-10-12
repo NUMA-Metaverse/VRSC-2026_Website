@@ -349,3 +349,5 @@ p, h1, h2, h3, figure { margin: 0; }
 html.is-over-peek-avatar, html.is-over-peek-avatar * { cursor: pointer !important; }
 .staff-card:target > *, .staff-card.is-flashing > * { animation: staff-flash 1.8s ease-out; }
 @keyframes staff-flash { 0%, 35% { background: var(--yellow); box-shadow: 0 0 0 3px var(--black); } 100% { background: #fffdf5; box-shadow: 0 0 0 0 transparent; } }
+.guest-layout:target .guest-portrait figure, .guest-layout.is-flashing .guest-portrait figure { animation: guest-flash 1.8s ease-out; }
+@keyframes guest-flash { 0%, 35% { background: var(--yellow); } 100% { background: var(--paper); } }

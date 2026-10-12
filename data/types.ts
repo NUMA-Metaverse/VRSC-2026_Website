@@ -26,12 +26,16 @@ export type Work = {
 };
 
 export type Guest = {
+  // ゲスト講演の各人の欄のid。左右から出るアバターを押したときの移動先になる。
+  id: string;
   day: 1 | 2;
   name: string;
   honorific: string;
   role: string;
   profile: string[];
   image: string;
+  // 全身のアバター画像。持っている人だけ、ページ左右の演出に低い確率で出る。
+  avatar?: { src: string; width: number; height: number };
 };
 
 export type TimetableDay = {

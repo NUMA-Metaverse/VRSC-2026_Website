@@ -20,7 +20,7 @@ export function GuestLecture() {
         </MotionReveal>
         <div className="guest-list">
           {guests.map((guest) => (
-            <div className="guest-layout" key={guest.day}>
+            <div className="guest-layout" key={guest.id} id={guest.id}>
               <MotionReveal className="guest-portrait" effect="photo">
                 <figure>
                   <Picture

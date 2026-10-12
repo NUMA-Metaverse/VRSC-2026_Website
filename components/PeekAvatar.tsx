@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { guests } from "@/data/guests";
 import { staff } from "@/data/staff";
 import { getPeekEnabled, getPeekQuietMs, subscribePeekEnabled } from "@/lib/peekEnabled";
 import { publicAsset } from "@/lib/site";
@@ -10,9 +11,49 @@ import { PEEK_RUSH_EVENT } from "@/lib/peekEnabled";
 // ぶいなびの記事ページと同じように、時間をおいて左右どちらかの画面の端から、
 // 制作と運営に関わった人のアバターがランダムに1体ずつ顔を出す。
 // アバターを押すと、その人の「制作、運営」の一覧の欄へ移動する。
+// ゲスト講演のゲストは制作、運営の人ではないが、特別に、低い確率で顔を出す。押すと、ゲスト講演のその人の欄へ移動する。
 
-const members = staff.flatMap((member) => (member.avatar ? [{ ...member, avatar: member.avatar }] : []));
-type Member = (typeof members)[number];
+type Member = { id: string; name: string; avatar: { src: string; width: number; height: number }; label: string };
+const members: Member[] = staff.flatMap((member) =>
+  member.avatar ? [{ id: member.id, name: member.name, avatar: member.avatar, label: `${member.name}を制作、運営の一覧で見る` }] : [],
+);
+const guestMembers: Member[] = guests.flatMap((guest) =>
+  guest.avatar ? [{ id: guest.id, name: guest.name, avatar: guest.avatar, label: `${guest.name}さんをゲスト講演の欄で見る` }] : [],
+);
+
+// アバターが1体出るたびに、この確率で、制作、運営の人の代わりにゲストが出る。
+// ただし、制作、運営の全員が一度は顔を出した端末でだけ出す。ロケットのアバターで飛んできた分は数えない。
+const GUEST_RATE = 0.03;
+const SEEN_STORAGE_KEY = "peek-avatar-seen";
+const seen = new Set<string>();
+let seenLoaded = false;
+
+function loadSeen() {
+  if (seenLoaded) return;
+  seenLoaded = true;
+  try {
+    const stored: unknown = JSON.parse(window.localStorage.getItem(SEEN_STORAGE_KEY) ?? "[]");
+    if (Array.isArray(stored)) stored.forEach((id) => typeof id === "string" && seen.add(id));
+  } catch {
+    // 読めない環境では、開いている間に出た分だけを数える。
+  }
+}
+
+function markSeen(id: string) {
+  loadSeen();
+  if (seen.has(id)) return;
+  seen.add(id);
+  try {
+    window.localStorage.setItem(SEEN_STORAGE_KEY, JSON.stringify([...seen]));
+  } catch {
+    // 保存できなくても動作は続ける。
+  }
+}
+
+function hasSeenEveryone() {
+  loadSeen();
+  return members.every((member) => seen.has(member.id));
+}
 
 const FIRST_DELAY_MS = 10_000;
 const INTERVAL_MIN_MS = 3_000;
@@ -39,6 +80,7 @@ const FIGURE_GUIDES: Record<string, FigureGuide> = {
   "/staff/11.webp": { head: { left: 0.16, right: 0.64, top: 0, bottom: 0.24 }, footX: 0.49 },
   "/staff/12.webp": { head: { left: 0.17, right: 0.65, top: 0, bottom: 0.22 }, footX: 0.43 },
   "/staff/14.webp": { head: { left: 0.14, right: 0.67, top: 0, bottom: 0.26 }, footX: 0.467 },
+  "/guest/01.webp": { head: { left: 0.24, right: 0.7, top: 0, bottom: 0.25 }, footX: 0.45 },
 };
 
 // 押せる範囲の判定に使う、アバター画像の形の粗い地図。
@@ -504,6 +546,8 @@ export function PeekAvatar() {
     let hideTimer: number | undefined;
     let queue: Member[] = [];
     let last: Member | undefined;
+    // ゲストが2回続けて出ないようにする。
+    let lastWasGuest = false;
 
     // 上・中・下のゾーンを均等に巡回させるシャッフルバッグ
     let zoneBag: VerticalZone[] = [];
@@ -573,13 +617,19 @@ export function PeekAvatar() {
     };
 
     // 全員が1回ずつ出てから次の周に入る。周の変わり目で同じ人が続かないようにする。
-    const nextMember = () => {
+    const nextStaff = () => {
       if (queue.length === 0) {
         queue = shuffled(members);
         if (queue.length > 1 && queue[queue.length - 1] === last) queue.unshift(queue.pop()!);
       }
       last = queue.pop()!;
       return last;
+    };
+    // ゲストはこの周回とは別に出すので、順番を消費しない。
+    const nextMember = () => {
+      const guestTurn = guestMembers.length > 0 && !lastWasGuest && hasSeenEveryone() && Math.random() < GUEST_RATE;
+      lastWasGuest = guestTurn;
+      return guestTurn ? guestMembers[Math.floor(Math.random() * guestMembers.length)] : nextStaff();
     };
 
     const hide = (rushing = false) => {
@@ -681,6 +731,7 @@ export function PeekAvatar() {
               return;
             }
             update({ ...next, active: true });
+            if (members.includes(member)) markSeen(member.id);
             scheduleHide(VISIBLE_MS);
           }),
         );
@@ -723,7 +774,7 @@ export function PeekAvatar() {
       ref={containerRef}
       href={`#${member.id}`}
       className={`peek-avatar ${side}${active ? " is-active" : ""}${peek.leaving ? " is-leaving" : ""}${peek.rushing ? " is-rushing" : ""}`}
-      aria-label={`${member.name}を制作、運営の一覧で見る`}
+      aria-label={member.label}
       aria-hidden={!active}
       tabIndex={active ? 0 : -1}
       onClick={(event) => {
