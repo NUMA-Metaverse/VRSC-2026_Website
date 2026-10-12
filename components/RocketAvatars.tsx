@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect } from "react";
+import { guests } from "@/data/guests";
 import { staff } from "@/data/staff";
-import { PEEK_RUSH_EVENT, setPeekBursting, subscribePeekEnabled } from "@/lib/peekEnabled";
+import { GUEST_RATE, GUEST_SCALE, PEEK_RUSH_EVENT, hasSeenAllStaff, setPeekBursting, subscribePeekEnabled } from "@/lib/peekEnabled";
 import { publicAsset } from "@/lib/site";
 
 // アバター表示のボタンを短い間に何度も押されたら、全員のアバターが
 // 画面の外のあらゆる方向から、ロケットのように頭を先にして飛び出してくる。
+// 制作、運営の全員をすでに見た端末なら、低い確率でゲストのアバターも一緒に飛んでくる。
 
 const avatars = staff.flatMap((member) => (member.avatar ? [member.avatar] : []));
+const guestAvatars = guests.flatMap((guest) => (guest.avatar ? [guest.avatar] : []));
 
 // この時間の間にこの回数押されたら、連打とみなす。
 const BURST_WINDOW_MS = 1_800;
@@ -33,7 +36,7 @@ export function RocketAvatars() {
     const launch = (avatar: (typeof avatars)[number], delay: number) => {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      const size = Math.round(between(width < 760 ? 110 : 160, width < 760 ? 190 : 280));
+      const size = Math.round(between(width < 760 ? 110 : 160, width < 760 ? 190 : 280) * (guestAvatars.includes(avatar) ? GUEST_SCALE : 1));
       const imageWidth = Math.round((size * avatar.width) / avatar.height);
 
       // 画面の中心を通る向きをランダムに決め、その両端の画面の外から外へ飛ばす。
@@ -81,8 +84,12 @@ export function RocketAvatars() {
     const launchAll = () => {
       setPeekBursting(true);
       window.dispatchEvent(new Event(PEEK_RUSH_EVENT));
+      const list = [...avatars];
+      if (guestAvatars.length > 0 && hasSeenAllStaff() && Math.random() < GUEST_RATE) {
+        list.push(...guestAvatars);
+      }
       // 並び順で出る時間が偏らないよう、順番を混ぜる。
-      const order = [...avatars].sort(() => Math.random() - 0.5);
+      const order = list.sort(() => Math.random() - 0.5);
       order.forEach((avatar) => launch(avatar, Math.random() * STAGGER_MS));
     };
 

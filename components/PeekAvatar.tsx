@@ -2,17 +2,32 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { guests } from "@/data/guests";
 import { staff } from "@/data/staff";
-import { getPeekEnabled, getPeekQuietMs, subscribePeekEnabled } from "@/lib/peekEnabled";
+import {
+  GUEST_RATE,
+  GUEST_SCALE,
+  PEEK_RUSH_EVENT,
+  getPeekEnabled,
+  getPeekQuietMs,
+  hasSeenAllStaff,
+  markStaffSeen,
+  subscribePeekEnabled,
+} from "@/lib/peekEnabled";
 import { publicAsset } from "@/lib/site";
-import { PEEK_RUSH_EVENT } from "@/lib/peekEnabled";
 
 // ぶいなびの記事ページと同じように、時間をおいて左右どちらかの画面の端から、
 // 制作と運営に関わった人のアバターがランダムに1体ずつ顔を出す。
 // アバターを押すと、その人の「制作、運営」の一覧の欄へ移動する。
+// ゲスト講演のゲストは制作、運営の人ではないが、特別に、低い確率で顔を出す。押すと、ゲスト講演のその人の欄へ移動する。
 
-const members = staff.flatMap((member) => (member.avatar ? [{ ...member, avatar: member.avatar }] : []));
-type Member = (typeof members)[number];
+type Member = { id: string; name: string; avatar: { src: string; width: number; height: number }; label: string; scale?: number };
+const members: Member[] = staff.flatMap((member) =>
+  member.avatar ? [{ id: member.id, name: member.name, avatar: member.avatar, label: `${member.name}を制作、運営の一覧で見る` }] : [],
+);
+const guestMembers: Member[] = guests.flatMap((guest) =>
+  guest.avatar ? [{ id: guest.id, name: guest.name, avatar: guest.avatar, label: `${guest.name}さんをゲスト講演の欄で見る`, scale: GUEST_SCALE }] : [],
+);
 
 const FIRST_DELAY_MS = 10_000;
 const INTERVAL_MIN_MS = 3_000;
@@ -39,6 +54,7 @@ const FIGURE_GUIDES: Record<string, FigureGuide> = {
   "/staff/11.webp": { head: { left: 0.16, right: 0.64, top: 0, bottom: 0.24 }, footX: 0.49 },
   "/staff/12.webp": { head: { left: 0.17, right: 0.65, top: 0, bottom: 0.22 }, footX: 0.43 },
   "/staff/14.webp": { head: { left: 0.14, right: 0.67, top: 0, bottom: 0.26 }, footX: 0.467 },
+  "/guest/01.webp": { head: { left: 0.24, right: 0.7, top: 0, bottom: 0.25 }, footX: 0.45 },
 };
 
 // 押せる範囲の判定に使う、アバター画像の形の粗い地図。
@@ -248,6 +264,7 @@ type Layout = {
 type LayoutInput = {
   mask: HitMask;
   aspect: number; // 幅 / 高さ
+  scale: number; // 高さに掛ける倍率。ゲストは少し大きく出す。
   zone: VerticalZone;
   side: Side;
   viewport: number;
@@ -260,7 +277,7 @@ const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
 
 // 左右どちらでも、画面の端を x = 0、内側を x の正の向きとして考える。
 // 右から出るときは画像を左右に反転した形で計算し、最後に回転の向きを戻す。
-function computeLayout({ mask, aspect, zone, side, viewport, safeTop, mobile, random }: LayoutInput): Layout {
+function computeLayout({ mask, aspect, scale, zone, side, viewport, safeTop, mobile, random }: LayoutInput): Layout {
   const between = (min: number, max: number) => min + random() * (max - min);
   const mirror = (u: number) => (side === "is-left" ? u : 1 - u);
 
@@ -280,7 +297,7 @@ function computeLayout({ mask, aspect, zone, side, viewport, safeTop, mobile, ra
     maxLean = lean + 10;
     sink = between(mobile ? 0.28 : 0.26, mobile ? 0.4 : 0.38);
     const fit = (viewport - safeTop) / (Math.cos(toRadians(lean)) - sink);
-    height = Math.round(Math.max(120, Math.min(between(heightMin, heightMax), fit)));
+    height = Math.round(Math.max(120, Math.min(between(heightMin, heightMax) * scale, fit)));
     top = Math.round(viewport + sink * height - height);
     originY = 1;
     shift = 0;
@@ -289,7 +306,7 @@ function computeLayout({ mask, aspect, zone, side, viewport, safeTop, mobile, ra
     // 腰(originY: 0.52)を中心に傾けることで、足元は壁の向こう(画面外)に隠れる。
     lean = Math.round(between(mobile ? 10 : 12, mobile ? 14 : 16));
     maxLean = lean + 8;
-    height = Math.round(between(mobile ? 220 : 340, mobile ? 270 : 430));
+    height = Math.round(between(mobile ? 220 : 340, mobile ? 270 : 430) * scale);
     const jitter = between(-viewport * 0.08, viewport * 0.08);
     top = Math.round(Math.max(safeTop + 16, Math.min(viewport - height * 0.5, viewport * 0.5 + jitter - height * 0.4)));
     originY = 0.52;
@@ -298,7 +315,7 @@ function computeLayout({ mask, aspect, zone, side, viewport, safeTop, mobile, ra
     // 上部ゾーン: ヘッダー下〜中央上の壁から顔を覗き込む。
     lean = Math.round(between(mobile ? 9 : 11, mobile ? 13 : 15));
     maxLean = lean + 8;
-    height = Math.round(between(mobile ? 200 : 320, mobile ? 250 : 400));
+    height = Math.round(between(mobile ? 200 : 320, mobile ? 250 : 400) * scale);
     const zoneTop = safeTop + 16;
     const zoneBottom = Math.max(zoneTop + 30, viewport * 0.36);
     top = Math.round(between(zoneTop, zoneBottom));
@@ -504,6 +521,8 @@ export function PeekAvatar() {
     let hideTimer: number | undefined;
     let queue: Member[] = [];
     let last: Member | undefined;
+    // ゲストが2回続けて出ないようにする。
+    let lastWasGuest = false;
 
     // 上・中・下のゾーンを均等に巡回させるシャッフルバッグ
     let zoneBag: VerticalZone[] = [];
@@ -573,13 +592,19 @@ export function PeekAvatar() {
     };
 
     // 全員が1回ずつ出てから次の周に入る。周の変わり目で同じ人が続かないようにする。
-    const nextMember = () => {
+    const nextStaff = () => {
       if (queue.length === 0) {
         queue = shuffled(members);
         if (queue.length > 1 && queue[queue.length - 1] === last) queue.unshift(queue.pop()!);
       }
       last = queue.pop()!;
       return last;
+    };
+    // ゲストはこの周回とは別に出すので、順番を消費しない。
+    const nextMember = () => {
+      const guestTurn = guestMembers.length > 0 && !lastWasGuest && hasSeenAllStaff() && Math.random() < GUEST_RATE;
+      lastWasGuest = guestTurn;
+      return guestTurn ? guestMembers[Math.floor(Math.random() * guestMembers.length)] : nextStaff();
     };
 
     const hide = (rushing = false) => {
@@ -651,6 +676,7 @@ export function PeekAvatar() {
         const layout = computeLayout({
           mask: masks.current.get(member.avatar.src) ?? FALLBACK_MASK,
           aspect: member.avatar.width / member.avatar.height,
+          scale: member.scale ?? 1,
           zone,
           side,
           viewport: window.innerHeight,
@@ -681,6 +707,7 @@ export function PeekAvatar() {
               return;
             }
             update({ ...next, active: true });
+            if (members.includes(member)) markStaffSeen(member.id);
             scheduleHide(VISIBLE_MS);
           }),
         );
@@ -723,7 +750,7 @@ export function PeekAvatar() {
       ref={containerRef}
       href={`#${member.id}`}
       className={`peek-avatar ${side}${active ? " is-active" : ""}${peek.leaving ? " is-leaving" : ""}${peek.rushing ? " is-rushing" : ""}`}
-      aria-label={`${member.name}を制作、運営の一覧で見る`}
+      aria-label={member.label}
       aria-hidden={!active}
       tabIndex={active ? 0 : -1}
       onClick={(event) => {
