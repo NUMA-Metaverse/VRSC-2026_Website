@@ -113,4 +113,11 @@ export const staff: StaffMember[] = [
     roles: ["配信"],
     icon: "/staff/icons/15.webp",
   },
+  {
+    id: "staff-16",
+    name: "ぞぞかす",
+    roles: ["空間デザイン"],
+    icon: "/staff/icons/16.webp",
+    link: "https://x.com/zozokasu2",
+  },
 ];
