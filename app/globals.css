@@ -97,9 +97,9 @@ p, h1, h2, h3, figure { margin: 0; }
 .timetable-caption h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; font-size: clamp(18px, 2.4vw, 26px); font-weight: 900; }
 .timetable-caption h3 span { background: var(--yellow); color: var(--black); padding: 5px 12px; }
 .timetable-caption p { font-size: 16px; font-weight: 800; }
-.timetable-image { display: block; border: 1px solid #f7f5ec50; cursor: zoom-in; }
+.timetable-image { display: block; border: 1px solid #f7f5ec50; cursor: zoom-in; aspect-ratio: 16 / 9; }
 .timetable-image:focus-visible { outline-color: var(--yellow); }
-.timetable-image img { width: 100%; height: auto; }
+.timetable-image img { width: 100%; height: auto; aspect-ratio: 16 / 9; }
 .lineup { border-bottom: 2px solid var(--black); }
 .lineup h2 { font-size: clamp(26px, 3.2vw, 42px); font-weight: 900; letter-spacing: -.05em; }
 .lineup-day { margin-top: 40px; }

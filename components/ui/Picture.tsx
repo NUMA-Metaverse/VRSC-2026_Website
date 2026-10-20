@@ -54,8 +54,8 @@ export function Picture({ src, alt, sizes, fill = false, priority = false, loadi
         srcSet={srcSet(image, widths, fallbackFormat)}
         sizes={sizes}
         alt={alt}
-        width={fill ? undefined : image.width}
-        height={fill ? undefined : image.height}
+        width={image.width}
+        height={image.height}
         loading={priority ? "eager" : loading}
         fetchPriority={priority ? "high" : undefined}
         decoding="async"
