@@ -59,10 +59,10 @@ p, h1, h2, h3, figure { margin: 0; }
 .photo-strip { position: relative; border-block: 4px solid var(--black); background: var(--black); }
 .photo-viewport { overflow: hidden; }
 .photo-viewport:focus-visible { outline-offset: -4px; }
-.photo-track { display: flex; width: max-content; animation: photo-scroll 80s linear infinite; }
+.photo-track { display: flex; width: max-content; animation: photo-scroll 80s linear infinite; will-change: transform; transform: translateZ(0); }
 .photo-track[data-direction="right"] { animation-direction: reverse; }
 .photo-set { display: flex; flex-shrink: 0; gap: 4px; padding-right: 4px; }
-.strip-photo { position: relative; width: clamp(200px, 22vw, 360px); aspect-ratio: 16 / 9; flex-shrink: 0; overflow: hidden; }
+.strip-photo { position: relative; width: clamp(200px, 22vw, 360px); aspect-ratio: 16 / 9; flex-shrink: 0; overflow: hidden; transform: translateZ(0); }
 .strip-photo img { object-fit: cover; }
 @keyframes photo-scroll { to { transform: translateX(-50%); } }
 .action-link { min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 12px 20px; background: var(--black); color: white; border: 2px solid var(--black); font-size: 13px; font-weight: 800; box-shadow: 4px 4px 0 var(--red); transition: transform .2s, box-shadow .2s; }
@@ -118,32 +118,37 @@ p, h1, h2, h3, figure { margin: 0; }
 .circle-icon img { object-fit: contain; }
 .circle-icon > span { font-size: 14px; font-weight: 900; color: #62615b; }
 .circle-copy { min-width: 0; overflow-wrap: anywhere; }
-.circle-copy p { font-size: 12px; font-weight: 800; line-height: 1.6; }
+.circle-copy p { font-size: 12px; font-weight: 800; line-height: 1.6; text-wrap: pretty; }
 .circle-copy small { font-size: 10px; color: #62615b; }
 .work-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px 16px; }
-.work-image { position: relative; display: block; aspect-ratio: 16 / 9; background: white; border: 1px solid #17171730; cursor: zoom-in; }
+.work-card { display: flex; flex-direction: column; height: 100%; }
+.work-image { position: relative; display: block; aspect-ratio: 16 / 9; background: white; border: 1px solid #17171730; cursor: zoom-in; flex-shrink: 0; }
 .work-image img { object-fit: contain; }
 .work-image:hover { outline: 2px solid var(--black); }
 .work-number { position: absolute; left: 0; top: 0; background: var(--yellow); padding: 4px 8px; font: 800 11px var(--font-mono); }
-.work-copy { padding-top: 10px; overflow-wrap: anywhere; }
-.work-copy h5 { margin: 0; font-size: 13px; line-height: 1.7; font-weight: 800; }
-.work-copy p { margin-top: 4px; font-size: 11px; color: #62615b; }
+.work-copy { display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; padding-top: 10px; overflow-wrap: anywhere; }
+.work-copy h5 { margin: 0; font-size: 13px; line-height: 1.6; font-weight: 800; text-wrap: pretty; }
+.work-copy p { margin-top: 6px; font-size: 11px; color: #62615b; }
 @media (max-width: 900px) {
   .circle-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .work-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+@media (max-width: 640px) {
+  .circle-grid { grid-template-columns: 1fr; gap: 8px; }
+  .circle-card { padding: 10px 12px; gap: 12px; }
+  .circle-icon { width: 44px; height: 44px; }
+  .circle-copy p { font-size: 13px; }
+  .circle-copy small { font-size: 11px; }
+  .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 10px; }
+}
 @media (max-width: 560px) {
   .lineup-day-header { padding: 12px; font-size: 12px; }
   .lineup-day-header b { margin-left: 6px; font-size: 10px; }
-  .circle-card { gap: 7px; padding: 10px 8px; }
-  .circle-icon { width: 36px; height: 36px; }
-  .circle-copy p { font-size: 11px; }
-  .lineup-number { font-size: 9px; }
-  .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
-  .work-copy h5 { font-size: 12px; }
+  .lineup-number { font-size: 10px; }
+  .work-copy h5 { font-size: 12px; line-height: 1.5; }
 }
 .guest-heading h2 { margin-bottom: 38px; font-size: clamp(28px, 3.2vw, 46px); font-weight: 900; letter-spacing: -.05em; line-height: 1.5; }
-.guest-layout { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.4fr); gap: 54px; align-items: start; }
+.guest-layout { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.4fr); gap: 54px; align-items: start; scroll-margin-top: 100px; }
 .guest-portrait figure { padding: 9px; border: 2px solid var(--black); background: var(--paper); box-shadow: 6px 6px 0 var(--black); }
 .guest-portrait img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; object-position: center 30%; }
 .guest-portrait figcaption { padding: 24px 18px 18px; }
@@ -158,13 +163,14 @@ p, h1, h2, h3, figure { margin: 0; }
 .staff h2 { font-size: 35px; font-weight: 900; line-height: 1.5; letter-spacing: -.04em; }
 .staff-description { font-size: 12px; margin-top: 12px; color: #62615b; }
 .staff-grid { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 32px 0 0; padding: 0; }
-.staff-card > * { display: flex; align-items: center; gap: 12px; height: 100%; padding: 12px; border: 1px solid var(--black); background: #fffdf5; transition: background .2s, transform .2s; }
+.staff-card { height: 100%; }
+.staff-card > * { display: flex; align-items: center; gap: 12px; height: 100%; padding: 12px; border: 1px solid var(--black); background: #fffdf5; transition: background .2s, transform .2s; box-sizing: border-box; }
 .staff-card > a:hover { background: var(--yellow); transform: translateY(-3px); }
-.staff-icon { flex-shrink: 0; width: 56px; height: 56px; border-radius: 50%; overflow: hidden; border: 1px solid #17171740; background: #e9e6da; }
+.staff-icon { flex-shrink: 0; width: 54px; height: 54px; border-radius: 50%; overflow: hidden; border: 1px solid #17171740; background: #e9e6da; }
 .staff-icon img { width: 100%; height: 100%; object-fit: cover; }
-.staff-copy { min-width: 0; }
-.staff-name { font-size: 14px; font-weight: 900; overflow-wrap: anywhere; }
-.staff-roles { margin-top: 4px; font-size: 11px; line-height: 1.7; color: #55544e; }
+.staff-copy { min-width: 0; flex: 1; }
+.staff-name { font-size: 13px; font-weight: 900; overflow-wrap: anywhere; }
+.staff-roles { margin-top: 4px; font-size: 11px; line-height: 1.5; color: #55544e; overflow-wrap: anywhere; text-wrap: pretty; }
 .coming-soon { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 53px; padding: 12px 15px; border-block: 1px solid #17171750; font-size: 12px; font-weight: 800; }
 .event-dates { display: grid; gap: 7px; margin-top: 20px; }
 .event-dates time { font-size: 13px; font-weight: 900; letter-spacing: -.03em; }
@@ -224,7 +230,7 @@ p, h1, h2, h3, figure { margin: 0; }
   .about-layout { display: flex; flex-direction: column; gap: 25px; align-items: stretch; }
   .about-copy h2 { font-size: 30px; margin-bottom: 22px; }
   .guest-heading h2 { font-size: 30px; margin-bottom: 26px; }
-  .guest-layout { grid-template-columns: 1fr; gap: 32px; }
+  .guest-layout { grid-template-columns: 1fr; gap: 32px; scroll-margin-top: 60px; }
   .guest-list { gap: 48px; }
   .staff h2 { font-size: 31px; }
   .staff-grid { gap: 12px; }
@@ -296,8 +302,18 @@ p, h1, h2, h3, figure { margin: 0; }
 
 
 @media (max-width: 760px) {
-  .staff-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .staff-card > * { flex-direction: column; align-items: center; text-align: center; }
+  .staff-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .staff-card > * { padding: 10px; gap: 10px; }
+  .staff-icon { width: 46px; height: 46px; }
+  .staff-name { font-size: 13px; }
+  .staff-roles { font-size: 10.5px; line-height: 1.45; }
+}
+@media (max-width: 480px) {
+  .staff-grid { grid-template-columns: 1fr; gap: 8px; }
+  .staff-card > * { padding: 10px 12px; gap: 12px; }
+  .staff-icon { width: 48px; height: 48px; }
+  .staff-name { font-size: 14px; }
+  .staff-roles { font-size: 11.5px; line-height: 1.5; }
 }
 /* 左右から顔を出すアバター。外側の .peek-avatar は、体の軸の上の回転の中心(--peek-pivot, --peek-origin-y)が
    画面の端に来る位置(--peek-x)に置いたまま動かさない。位置と傾きは PeekAvatar.tsx で、顔が端で切れないように画像ごとに計算する。

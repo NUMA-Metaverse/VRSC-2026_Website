@@ -35,9 +35,9 @@ export function GuestLecture() {
                   </figcaption>
                 </figure>
               </MotionReveal>
-              <MotionReveal className="guest-profile" delay={0.12}>
+              <div className="guest-profile">
                 {guest.profile.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-              </MotionReveal>
+              </div>
             </div>
           ))}
         </div>
