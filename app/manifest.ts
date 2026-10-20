@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { fixedPngPath } from "@/lib/images";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, siteUrl } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_NAME, siteUrl } from "@/lib/site";
 
 export const dynamic = "force-static";
 
@@ -9,7 +9,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: SITE_NAME,
     short_name: "VRサークル大会2026",
     description: SITE_DESCRIPTION,
-    start_url: `${SITE_URL}/`,
+    start_url: "./",
     display: "standalone",
     background_color: "#f7f5ec",
     theme_color: "#e73d35",

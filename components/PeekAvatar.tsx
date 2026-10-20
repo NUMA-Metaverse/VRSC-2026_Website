@@ -431,6 +431,7 @@ export function PeekAvatar() {
   const holding = useRef({ hover: false, focus: false });
   const hideRef = useRef<() => void>(() => {});
   const releaseRef = useRef<() => void>(() => {});
+  const lastScrollTime = useRef(0);
 
   const update = useCallback((next: Peek | null) => {
     peekRef.current = next;
@@ -486,9 +487,35 @@ export function PeekAvatar() {
   }, []);
 
   // アバターの上に重なるクリックやタップは、透過していない所(とその周り)だけ受け取る。
-  // それ以外は下にあるページへそのまま通す。
+  // スクロール操作やスワイプの最中は誤タップを防ぎ、下にあるページへそのまま通す。
   useEffect(() => {
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+
+    const onScroll = () => {
+      lastScrollTime.current = performance.now();
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      startX = event.clientX;
+      startY = event.clientY;
+      isDragging = false;
+    };
+
+    const onPointerUp = (event: PointerEvent) => {
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+      if (Math.hypot(dx, dy) > 8) {
+        isDragging = true;
+      }
+    };
+
     const onClick = (event: MouseEvent) => {
+      if (isDragging || performance.now() - lastScrollTime.current < 250) {
+        isDragging = false;
+        return;
+      }
       const current = peekRef.current;
       if (!current || !hitTest(event.clientX, event.clientY)) return;
       event.preventDefault();
@@ -503,9 +530,15 @@ export function PeekAvatar() {
       document.documentElement.classList.toggle("is-over-peek-avatar", over);
       if (!over) releaseRef.current();
     };
+    document.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("pointerdown", onPointerDown, { passive: true, capture: true });
+    document.addEventListener("pointerup", onPointerUp, { passive: true, capture: true });
     document.addEventListener("click", onClick, true);
     document.addEventListener("pointermove", onPointerMove, { passive: true });
     return () => {
+      document.removeEventListener("scroll", onScroll);
+      document.removeEventListener("pointerdown", onPointerDown, { capture: true });
+      document.removeEventListener("pointerup", onPointerUp, { capture: true });
       document.removeEventListener("click", onClick, true);
       document.removeEventListener("pointermove", onPointerMove);
       document.documentElement.classList.remove("is-over-peek-avatar");
@@ -649,6 +682,11 @@ export function PeekAvatar() {
     function show() {
       if (document.hidden || !getPeekEnabled()) {
         scheduleNext();
+        return;
+      }
+      // スクロール中やその直後は出さず、スクロールが止まってから出す。
+      if (performance.now() - lastScrollTime.current < 500) {
+        scheduleNext(randomBetween(600, 1200));
         return;
       }
       // アバターが飛んでくる間とその直後は出さない。終わった頃にまた確かめる。

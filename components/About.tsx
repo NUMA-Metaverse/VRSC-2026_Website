@@ -38,6 +38,7 @@ export function About() {
                   alt="星空が広がるワールドに集まる団体の仲間たち"
                   fill
                   sizes="(max-width: 760px) 80vw, 38vw"
+                  loading="eager"
                 />
               </div>
             </figure>
@@ -48,6 +49,7 @@ export function About() {
                   alt="アバター姿で記念撮影を楽しむ学生たち"
                   fill
                   sizes="(max-width: 760px) 48vw, 22vw"
+                  loading="eager"
                 />
               </div>
             </figure>
