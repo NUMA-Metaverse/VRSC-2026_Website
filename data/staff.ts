@@ -120,4 +120,10 @@ export const staff: StaffMember[] = [
     icon: "/staff/icons/16.webp",
     link: "https://x.com/zozokasu2",
   },
+  {
+    id: "staff-17",
+    name: "ぶどう狐",
+    roles: ["空間デザイン"],
+    icon: "/staff/icons/17.webp",
+  },
 ];
